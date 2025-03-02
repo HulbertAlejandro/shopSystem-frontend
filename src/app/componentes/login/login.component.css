@@ -1,0 +1,70 @@
+/* Ajuste global para ocupar toda la pantalla */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #1c1c1c;
+    color: white;
+  }
+  
+  /* Contenedor principal para centrar el login */
+  .container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Caja del formulario */
+  .form-container {
+    max-width: 320px;
+    width: 100%;
+    padding: 20px;
+    background: #222;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+  }
+  
+  /* Ajustes de los inputs */
+  .form-control {
+    background: #333;
+    color: white;
+    border: none;
+    height: 45px;
+    font-size: 14px;
+  }
+  
+  .form-control::placeholder {
+    color: #bbb;
+    font-size: 14px;
+  }
+  
+  .form-control:focus {
+    background: #444;
+    color: white;
+  }
+  
+  /* Botón */
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    height: 45px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Footer pegado al fondo sin dejar espacio */
+  footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: #222;
+    color: white;
+    margin-top: auto;  /* Se ajusta para que siempre esté al fondo */
+  }
+  
