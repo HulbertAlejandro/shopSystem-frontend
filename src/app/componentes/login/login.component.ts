@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControlOptions, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // 🔹 IMPORTANTE: Necesario para usar @if
+import { AuthService } from '../../services/auth.service';
+import { LoginDTO } from '../../dto/login-dto';
+import Swal from 'sweetalert2';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -12,23 +16,42 @@ import { CommonModule } from '@angular/common'; // 🔹 IMPORTANTE: Necesario pa
 })
 export class LoginComponent {
   loginForm!: FormGroup;
+  
   submitted = false; // Variable para controlar si se intentó enviar el formulario
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private authService : AuthService, 
+    private tokenService: TokenService) {
     this.crearFormulario();
+    
   }
 
   private crearFormulario() {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(7)]]
-    });
+    }
+  );
+    
   }
 
   public iniciarSesion() {
-    this.submitted = true; // Se activa cuando se presiona el botón
-    if (this.loginForm.valid) {
-      console.log('Login exitoso:', this.loginForm.value);
-    }
+    const loginDTO = this.loginForm.value as LoginDTO;
+    
+    console.log(loginDTO.correo)
+    console.log(loginDTO.password)
+
+    this.authService.iniciarSesion(loginDTO).subscribe({
+      next: (data) => {
+        this.tokenService.login(data.respuesta.token);
+      },
+      error: (error) => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.error.respuesta
+        });
+      },
+    });
+
   }
 }

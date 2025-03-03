@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControlOptions } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
+import { CrearCuentaDTO } from '../../dto/crear-cuenta-dto';
 
 @Component({
   selector: 'app-registro',
@@ -12,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class RegistroComponent {
   registroForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private authService : AuthService) {
     this.crearFormulario();
   }
 
@@ -21,7 +24,7 @@ export class RegistroComponent {
       {
         cedula: ['', [Validators.required]],
         nombre: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
+        correo: ['', [Validators.required, Validators.email]],
         direccion: ['', [Validators.required]],
         telefono: ['', [Validators.required, Validators.maxLength(10)]],
         password: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
@@ -32,14 +35,37 @@ export class RegistroComponent {
   }
 
   public registrar() {
-    if (this.registroForm.valid) {
-      console.log(this.registroForm.value);
-    }
+    const crearCuenta = this.registroForm.value as CrearCuentaDTO;
+  
+    console.log(crearCuenta); // Verifica que los datos estén correctos antes de enviarlos
+  
+    this.authService.crearCuenta(crearCuenta).subscribe({
+      next: (data) => {
+        Swal.fire({
+          title: 'Cuenta creada',
+          text: 'La cuenta se ha creado correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        Swal.fire({
+          title: 'Error',
+          text: error.error.respuesta,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    });
   }
 
-  private passwordsMatchValidator(formGroup: FormGroup) {
+  passwordsMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('password')?.value;
     const confirmaPassword = formGroup.get('confirmaPassword')?.value;
+
+    // Si las contraseñas no coinciden, devuelve un error, de lo contrario, null
     return password === confirmaPassword ? null : { passwordsMismatch: true };
   }
+  
 }
