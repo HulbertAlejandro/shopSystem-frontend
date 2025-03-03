@@ -1,1 +1,69 @@
-<p>inicio works!</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio - Supermercado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: white;
+        }
+        .card {
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        .card img {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Nuestros Productos</h1>
+    
+        <!-- Filtro de búsqueda con botón -->
+        <div class="filtro-container mb-4">
+            <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
+            <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+        </div>
+    
+        <!-- Contenedor de productos -->
+        <div class="productos-container">
+            @for (producto of productosFiltrados(); track producto.id) {
+                <div class="producto">
+                    <div class="card">
+                        <img [src]="producto.imagen" class="card-img-top" alt="{{ producto.nombre }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            <p class="card-text">{{ producto.descripcion }}</p>
+                            <p class="fw-bold text-center">$ {{ producto.precio.toFixed(2) }}</p>
+                            <button class="btn btn-primary w-100" (click)="agregarAlCarrito(producto)">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>        
+</body>
+</html>

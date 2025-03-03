@@ -1,0 +1,74 @@
+/* 🔹 Contenedor de productos */
+.productos-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* 🔹 Asegura que las tarjetas sean responsivas */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 🔹 Cada tarjeta mantiene su tamaño */
+.card {
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    width: 250px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card img {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-text {
+    flex-grow: 1;
+}
+
+/* 🔹 Contenedor principal del filtro */
+.filtro-container {
+    display: flex;
+    gap: 10px;
+    width: 100%; /* 🔹 Ocupa todo el ancho disponible */
+    max-width: 900px; /* 🔹 Igual que el contenedor de productos */
+    margin: 0 auto;
+}
+
+/* 🔹 Input de búsqueda ocupa todo el espacio disponible */
+.filtro-container input {
+    flex-grow: 1; /* 🔹 Se expande automáticamente */
+}
+
+/* 🔹 Botón de búsqueda con tamaño fijo */
+.filtro-container button {
+    flex-shrink: 0; /* 🔹 Evita que cambie de tamaño */
+    width: 120px;
+}
+
+/* 🔹 Contenedor de productos */
+.productos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: stretch;
+    max-width: 900px; /* 🔹 Mismo ancho que el filtro */
+    margin: 0 auto;
+}
