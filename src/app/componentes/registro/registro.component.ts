@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
 import { CrearCuentaDTO } from '../../dto/crear-cuenta-dto';
+import { Router } from '@angular/router'; // Importar Router para la redirección
 
 @Component({
   selector: 'app-registro',
@@ -15,7 +16,7 @@ import { CrearCuentaDTO } from '../../dto/crear-cuenta-dto';
 export class RegistroComponent {
   registroForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authService : AuthService) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) { 
     this.crearFormulario();
   }
 
@@ -43,9 +44,11 @@ export class RegistroComponent {
       next: (data) => {
         Swal.fire({
           title: 'Cuenta creada',
-          text: 'La cuenta se ha creado correctamente',
+          text: 'La cuenta se ha creado correctamente. Verifica tu código para activarla.',
           icon: 'success',
           confirmButtonText: 'Aceptar'
+        }).then(() => {
+          this.router.navigate(['/verificacion-cuenta']); // Redirigir al usuario
         });
       },
       error: (error) => {
@@ -67,5 +70,4 @@ export class RegistroComponent {
     // Si las contraseñas no coinciden, devuelve un error, de lo contrario, null
     return password === confirmaPassword ? null : { passwordsMismatch: true };
   }
-  
 }
