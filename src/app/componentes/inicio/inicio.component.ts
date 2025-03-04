@@ -13,6 +13,7 @@ export class InicioComponent {
   filtro: string = '';
   filtroTemp: string = '';
   categoriaSeleccionada: string = '';
+  carrito: any[] = [];
 
   productos = [
     { id: 1, nombre: 'Manzana', categoria: 'Frutas', descripcion: 'Frescas y deliciosas.', precio: 1.50, imagen: 'https://via.placeholder.com/200' },
@@ -60,7 +61,17 @@ export class InicioComponent {
     this.filtro = this.filtroTemp;
   }
 
-  agregarAlCarrito(producto: any) {
-    console.log('Producto añadido:', producto);
+  agregarAlCarrito(producto: any, cantidad: number) {
+    if (cantidad < 1) return; // Evita agregar cantidades inválidas
+
+    const productoEnCarrito = this.carrito.find(item => item.id === producto.id);
+
+    if (productoEnCarrito) {
+        productoEnCarrito.cantidad += cantidad; // Aumenta la cantidad si ya existe en el carrito
+    } else {
+        this.carrito.push({ ...producto, cantidad }); // Agrega con la cantidad seleccionada
+    }
+
+    console.log("Carrito actualizado:", this.carrito);
   }
 }

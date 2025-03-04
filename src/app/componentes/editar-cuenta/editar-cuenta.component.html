@@ -1,0 +1,58 @@
+<div class="form-container">
+    <form [formGroup]="editarPerfilForm" (ngSubmit)="guardarCambios()">
+        <h2 class="text-center mb-4">Editar Perfil</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="cedula" formControlName="cedula" placeholder="Cédula" readonly>
+                    <label for="cedula">Cédula</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre">
+                    <label for="nombre">Nombre</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="correo" formControlName="correo" placeholder="Email" readonly>
+                    <label for="correo">Email</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="direccion" formControlName="direccion" placeholder="Dirección">
+                    <label for="direccion">Dirección</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="telefono" formControlName="telefono" placeholder="Teléfono">
+                    <label for="telefono">Teléfono</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" formControlName="password" placeholder="Nueva Contraseña">
+                    <label for="password">Nueva Contraseña</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" placeholder="Repetir Contraseña">
+            <label for="confirmPassword">Repetir Contraseña</label>
+        </div>
+
+        <button class="btn btn-primary w-100 mb-3" type="submit">Guardar Cambios</button>
+        <button class="btn btn-danger w-100" type="button" (click)="eliminarCuenta()">Eliminar Cuenta</button>
+    </form>                
+</div>

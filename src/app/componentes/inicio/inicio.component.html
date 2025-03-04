@@ -34,6 +34,14 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+        /* 🔹 Input de cantidad */
+        .cantidad-input {
+            width: 60px;
+            text-align: center;
+            margin-right: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -42,12 +50,12 @@
     
         <!-- Contenedor de filtros centrado -->
         <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
-            <!-- Input de búsqueda (ajustado para mayor proporción) -->
+            <!-- Input de búsqueda -->
             <div class="col-md-4 px-2">
                 <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
             </div>
 
-            <!-- Botón de búsqueda centrado -->
+            <!-- Botón de búsqueda -->
             <div class="col-auto px-2">
                 <button class="btn btn-primary" (click)="buscar()">Buscar</button>
             </div>
@@ -73,9 +81,16 @@
                             <h5 class="card-title">{{ producto.nombre }}</h5>
                             <p class="card-text">{{ producto.descripcion }}</p>
                             <p class="fw-bold text-center">$ {{ producto.precio.toFixed(2) }}</p>
-                            <button class="btn btn-primary w-100" (click)="agregarAlCarrito(producto)">
-                                Añadir al carrito
-                            </button>
+                            
+                            <!-- 🔹 Selector de cantidad -->
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control cantidad-input"
+                                       min="1" max="99" value="1" #cantidad>
+                                <button class="btn btn-primary w-100" 
+                                        (click)="agregarAlCarrito(producto, cantidad.valueAsNumber)">
+                                    Añadir al carrito
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
