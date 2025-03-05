@@ -6,6 +6,7 @@ import { VerificacionCuentaComponent } from './componentes/verificacion-cuenta/v
 import { VerificacionComponent } from './componentes/verificacion/verificacion.component';
 import { EditarCuentaComponent } from './componentes/editar-cuenta/editar-cuenta.component';
 import { CarritoComponent } from './componentes/carrito/carrito.component';
+import { BodegaComponent } from './componentes/bodega/bodega.component';
 
 export const routes: Routes = [
    { path: '', component: InicioComponent },
@@ -15,5 +16,6 @@ export const routes: Routes = [
    { path: "verificacion", component: VerificacionComponent },
    { path: "editar-cuenta", component: EditarCuentaComponent},
    { path: "carrito", component: CarritoComponent},
+   { path: "bodega", component: BodegaComponent},
    { path: "**", pathMatch: "full", redirectTo: "" }
 ];

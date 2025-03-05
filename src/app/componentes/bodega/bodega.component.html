@@ -1,0 +1,50 @@
+<div class="container py-5">
+    <h1 class="text-center mb-4">📦 Bodega del Supermercado</h1>
+
+    <!-- Filtros -->
+    <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
+        <div class="col-md-4 px-2">
+            <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
+        </div>
+
+        <div class="col-auto px-2">
+            <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+        </div>
+
+        <div class="col-md-4 px-2">
+            <select class="form-select" [(ngModel)]="categoriaSeleccionada" (change)="buscar()">
+                <option value="">Todas las categorías</option>
+                <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Tabla de Bodega -->
+    <table class="table table-dark table-striped text-center">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Stock Disponible</th>
+                <th>Stock Mínimo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let producto of productosFiltrados" [class.table-danger]="producto.stock <= producto.stockMinimo">
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria }}</td>
+                <td>{{ producto.stock }}</td>
+                <td>{{ producto.stockMinimo }}</td>
+                <td>
+                    <input type="number" class="form-control d-inline-block w-25 mx-1" #cantidadAgregar min="1">
+                    <button class="btn btn-success btn-sm" (click)="agregarStock(producto, cantidadAgregar.valueAsNumber)">
+                        <span style="color: black;">➕</span>
+                    </button>                                        
+                    <input type="number" class="form-control d-inline-block w-25 mx-1" #cantidadRetirar min="1">
+                    <button class="btn btn-danger btn-sm" style="color: black;" (click)="retirarStock(producto, cantidadRetirar.valueAsNumber)">➖</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
