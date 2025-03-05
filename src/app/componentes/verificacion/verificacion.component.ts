@@ -49,7 +49,7 @@ export class VerificacionComponent {
             const rol = this.tokenService.getRol();
             Swal.fire({
                       title: 'Cuenta Validada',
-                      text: 'La cuenta se ha validado correctamente. Bienvenido a SG Supermercados.',
+                      text: 'La cuenta se ha validado correctamente. Bienvenido',
                       icon: 'success',
                       confirmButtonText: 'Aceptar'
                     }).then(() => {
@@ -58,7 +58,7 @@ export class VerificacionComponent {
                           this.router.navigate(['/home']); 
                           break;
                         case "ADMINISTRADOR":
-                          this.router.navigate(['/carrito']); 
+                          this.router.navigate(['/bodega']); 
                           break;
                       }
                       // Redirigir al usuario
@@ -72,26 +72,5 @@ export class VerificacionComponent {
             });
           }
         });
-
-
-
-
-    // if (codigo === codigoCorrecto) {
-    //   Swal.fire({
-    //     icon: 'success',
-    //     title: 'Verificación exitosa',
-    //     text: 'Redirigiendo al inicio...',
-    //     timer: 2000,
-    //     showConfirmButton: false
-    //   }).then(() => {
-    //     this.router.navigate(['/inicio']); // ✅ Redirige correctamente al inicio
-    //   });
-    // } else {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Código incorrecto',
-    //     text: 'Por favor, inténtelo nuevamente.'
-    //   });
-    // }
   }   
 }
