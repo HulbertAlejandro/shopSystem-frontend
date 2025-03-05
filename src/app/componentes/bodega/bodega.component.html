@@ -37,12 +37,46 @@
                 <td>{{ producto.stock }}</td>
                 <td>{{ producto.stockMinimo }}</td>
                 <td>
-                    <input type="number" class="form-control d-inline-block w-25 mx-1" #cantidadAgregar min="1">
-                    <button class="btn btn-success btn-sm" (click)="agregarStock(producto, cantidadAgregar.valueAsNumber)">
-                        <span style="color: black;">➕</span>
+                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadAgregar min="1" style="width: 55px; font-size: 14px;">
+                    <button class="btn btn-success btn-sm fw-light" (click)="agregarStock(producto, cantidadAgregar.valueAsNumber)">
+                        Agregar
                     </button>                                        
-                    <input type="number" class="form-control d-inline-block w-25 mx-1" #cantidadRetirar min="1">
-                    <button class="btn btn-danger btn-sm" style="color: black;" (click)="retirarStock(producto, cantidadRetirar.valueAsNumber)">➖</button>
+                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadRetirar min="1" style="width: 55px; font-size: 14px;">
+                    <button class="btn btn-danger btn-sm fw-light" (click)="retirarStock(producto, cantidadRetirar.valueAsNumber)">
+                        Retirar
+                    </button>
+                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadReabastecer min="1" style="width: 55px; font-size: 14px;">
+                    <button class="btn btn-warning btn-sm fw-light" (click)="agregarAOrden(producto, cantidadReabastecer.valueAsNumber)">
+                        Agregar a Orden
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Órdenes de Reabastecimiento -->
+    <h2 class="text-center mt-5">📋 Órdenes de Reabastecimiento</h2>
+    <button class="btn btn-primary mb-3" *ngIf="ordenes.length > 0" (click)="crearOrden()">
+        Crear Orden
+    </button>
+    <table class="table table-warning table-striped text-center" *ngIf="ordenes.length > 0">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Cantidad Solicitada</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let orden of ordenes">
+                <td>{{ orden.nombre }}</td>
+                <td>{{ orden.categoria }}</td>
+                <td>{{ orden.cantidadSolicitada }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm fw-light" (click)="eliminarOrden(orden)">
+                        Eliminar
+                    </button>
                 </td>
             </tr>
         </tbody>
