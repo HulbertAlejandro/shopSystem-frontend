@@ -9,6 +9,7 @@ import { CarritoComponent } from './componentes/carrito/carrito.component';
 import { BodegaComponent } from './componentes/bodega/bodega.component';
 
 export const routes: Routes = [
+   { path: '', component: InicioComponent },
    { path: 'home', component: InicioComponent },
    { path: 'login', component: LoginComponent },
    { path: 'registro', component: RegistroComponent },
