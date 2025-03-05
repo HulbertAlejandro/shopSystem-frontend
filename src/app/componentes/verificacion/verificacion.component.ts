@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ROUTER_OUTLET_DATA } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { VerificacionDTO } from '../../dto/verificacion-dto';
+import { AuthService } from '../../services/auth.service';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-verificacion',
@@ -15,7 +18,7 @@ import Swal from 'sweetalert2';
 export class VerificacionComponent {
   verificacionForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private authService : AuthService,private tokenService: TokenService) {
     this.crearFormulario();
   }
 
@@ -35,24 +38,60 @@ export class VerificacionComponent {
     console.log('Correo:', correo);
     console.log('Código ingresado:', codigo);
 
-    const codigoCorrecto = '123456';
+    const verificacionDTO = this.verificacionForm.value as VerificacionDTO;
 
-    if (codigo === codigoCorrecto) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Verificación exitosa',
-        text: 'Redirigiendo al inicio...',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        this.router.navigate(['/inicio']); // ✅ Redirige correctamente al inicio
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Código incorrecto',
-        text: 'Por favor, inténtelo nuevamente.'
-      });
-    }
+    console.log(verificacionDTO.codigo)
+    console.log(verificacionDTO.correo)
+
+    this.authService.verificarSesion(verificacionDTO).subscribe({
+          next: (data) => {
+            this.tokenService.login(data.respuesta.token);
+            const rol = this.tokenService.getRol();
+            Swal.fire({
+                      title: 'Cuenta Validada',
+                      text: 'La cuenta se ha validado correctamente. Bienvenido a SG Supermercados.',
+                      icon: 'success',
+                      confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                      switch (rol){
+                        case "CLIENTE":
+                          this.router.navigate(['/home']); 
+                          break;
+                        case "ADMINISTRADOR":
+                          this.router.navigate(['/carrito']); 
+                          break;
+                      }
+                      // Redirigir al usuario
+                    });
+          },
+          error: (error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.error.respuesta
+            });
+          }
+        });
+
+
+
+
+    // if (codigo === codigoCorrecto) {
+    //   Swal.fire({
+    //     icon: 'success',
+    //     title: 'Verificación exitosa',
+    //     text: 'Redirigiendo al inicio...',
+    //     timer: 2000,
+    //     showConfirmButton: false
+    //   }).then(() => {
+    //     this.router.navigate(['/inicio']); // ✅ Redirige correctamente al inicio
+    //   });
+    // } else {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Código incorrecto',
+    //     text: 'Por favor, inténtelo nuevamente.'
+    //   });
+    // }
   }   
 }

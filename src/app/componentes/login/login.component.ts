@@ -45,7 +45,6 @@ export class LoginComponent {
     this.authService.iniciarSesion(loginDTO).subscribe({
       next: (data) => {
         this.tokenService.login(data.respuesta.token);
-
         // ✅ Redirigir a la ventana de verificación
         this.router.navigate(['/verificacion']); // Asegúrate de usar la ruta correcta
       },
