@@ -5,6 +5,7 @@ import { MensajeDTO } from '../dto/mensaje-dto';
 import { LoginDTO } from '../dto/login-dto';
 import { Observable } from 'rxjs';
 import { VerificacionDTO } from '../dto/verificacion-dto';
+import { ValidarCuentaDTO } from '../dto/validar-cuenta-dto';
 
 
 @Injectable({
@@ -13,19 +14,23 @@ import { VerificacionDTO } from '../dto/verificacion-dto';
 export class AuthService {
 
 
- private authURL = "http://localhost:8080/api/auth";
+  private authURL = "http://localhost:8080/api/auth";
  
- public crearCuenta(cuentaDTO: CrearCuentaDTO): Observable<MensajeDTO> {
-  return this.http.post<MensajeDTO>(`${this.authURL}/crear-cuenta`, cuentaDTO);
- }
+  public crearCuenta(cuentaDTO: CrearCuentaDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-cuenta`, cuentaDTO);
+  }
  
- public iniciarSesion(loginDTO: LoginDTO): Observable<MensajeDTO> {
-  return this.http.post<MensajeDTO>(`${this.authURL}/iniciar-sesion`, loginDTO);
- }
+  public iniciarSesion(loginDTO: LoginDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/iniciar-sesion`, loginDTO);
+  }
 
- public verificarSesion(verificacionDTO: VerificacionDTO): Observable<MensajeDTO> {
+  public verificarSesion(verificacionDTO: VerificacionDTO): Observable<MensajeDTO> {
     return this.http.put<MensajeDTO>(`${this.authURL}/verificar-sesion`, verificacionDTO);
-   }
+  }
+
+  public activarCuenta(activarCuentaDTO: ValidarCuentaDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/activar-cuenta`, activarCuentaDTO);
+  }
 
  constructor(private http: HttpClient) { 
   
