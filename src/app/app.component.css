@@ -1,0 +1,43 @@
+/* Mantiene la página completa en altura y estructura */
+html, body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #1c1c1c;
+  color: white;
+}
+
+/* El contenido debe ocupar todo el espacio disponible */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos se apilen correctamente */
+  justify-content: center; /* Centra el contenido */
+  align-items: center;
+  width: 100%;
+  padding: 20px; /* Evita que los elementos estén pegados a los bordes */
+}
+
+/* Navbar */
+.navbar {
+  background: #222;
+}
+
+.navbar-brand, .nav-link {
+  color: white !important;
+}
+
+.nav-link:hover {
+  color: #007bff !important;
+}
+
+/* Footer siempre al fondo */
+footer {
+  text-align: center;
+  padding: 15px;
+  background: #222;
+  color: white;
+  width: 100%;
+  margin-top: auto; /* Empuja el footer hacia abajo */
+}

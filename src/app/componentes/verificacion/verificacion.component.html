@@ -1,19 +1,93 @@
-<div class="form-container">
-    <form [formGroup]="verificacionForm" (ngSubmit)="verificarCodigo($event)">
-        <h2 class="text-center mb-4">Verificación en Dos Pasos</h2>
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1c1c1c;
+            color: white;
+            flex-direction: column;
+        }
 
-        <p class="text-center">Ingrese su correo y el código de verificación enviado.</p>
+        .form-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 30px;
+            background: #222;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
 
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="correo" formControlName="correo" placeholder="Correo electrónico">
-            <label for="correo">Correo electrónico</label>
-        </div>
+        .form-control {
+            background: #333;
+            color: white !important;
+            border: none;
+            height: 60px;
+            font-size: 16px;
+            padding: 15px;
+        }
 
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="codigo" formControlName="codigo" placeholder="Código de verificación">
-            <label for="codigo">Código de verificación</label>
-        </div>
+        .form-control::placeholder {
+            color: #bbb;
+        }
 
-        <button class="btn btn-primary w-100" type="submit" [disabled]="verificacionForm.invalid">Verificar Código</button>
-    </form>
-</div>
+        .form-control:focus {
+            background: #444;
+            color: white !important;
+        }
+
+        .form-floating label {
+            background: transparent !important;
+            color: white !important;
+            padding: 10px 5px;
+            transform: translateY(10px);
+        }
+
+        .form-floating>label::after {
+            background: transparent !important;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            height: 50px;
+            font-size: 18px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            height: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>  
+    <div class="form-container">
+        <form [formGroup]="verificacionForm" (ngSubmit)="verificarCodigo($event)">
+            <h2 class="text-center mb-4">Verificación en Dos Pasos</h2>
+
+            <p class="text-center">Ingrese su correo y el código de verificación enviado.</p>
+
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="correo" formControlName="correo" placeholder="Correo electrónico">
+                <label for="correo">Correo electrónico</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="codigo" formControlName="codigo" placeholder="Código de verificación">
+                <label for="codigo">Código de verificación</label>
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit" [disabled]="verificacionForm.invalid">Verificar Código</button>
+        </form>
+    </div>

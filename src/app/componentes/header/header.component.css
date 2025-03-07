@@ -1,0 +1,46 @@
+.navbar {
+  background: #222;
+  padding: 10px 20px;
+}
+
+.navbar-brand {
+  color: white !important;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: white !important;
+  font-size: 1rem;
+  padding: 8px 12px;
+}
+
+.nav-link:hover {
+  color: #007bff !important;
+}
+
+/* Asegurar que el navbar se comporte correctamente */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Mueve los elementos a la derecha */
+  width: auto;
+  margin-left: auto; /* Empuja los elementos hacia la derecha */
+}
+
+/* Ajustar el tamaño del logo */
+.logo {
+  height: 40px;
+}
+
+/* Estilo del icono de usuario */
+.user-icon {
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+/* Espaciado uniforme entre elementos */
+.navbar-nav .nav-item {
+  margin: 0 10px;
+}

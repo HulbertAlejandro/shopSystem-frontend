@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ROUTER_OUTLET_DATA } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -18,7 +18,12 @@ import { TokenService } from '../../services/token.service';
 export class VerificacionComponent {
   verificacionForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService : AuthService,private tokenService: TokenService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private authService: AuthService,
+    private tokenService: TokenService
+  ) {
     this.crearFormulario();
   }
 
@@ -40,37 +45,41 @@ export class VerificacionComponent {
 
     const verificacionDTO = this.verificacionForm.value as VerificacionDTO;
 
-    console.log(verificacionDTO.codigo)
-    console.log(verificacionDTO.correo)
+    console.log(verificacionDTO.codigo);
+    console.log(verificacionDTO.correo);
 
     this.authService.verificarSesion(verificacionDTO).subscribe({
-          next: (data) => {
-            this.tokenService.login(data.respuesta.token);
-            const rol = this.tokenService.getRol();
-            Swal.fire({
-                      title: 'Cuenta Validada',
-                      text: 'La cuenta se ha validado correctamente. Bienvenido',
-                      icon: 'success',
-                      confirmButtonText: 'Aceptar'
-                    }).then(() => {
-                      switch (rol){
-                        case "CLIENTE":
-                          this.router.navigate(['/home']); 
-                          break;
-                        case "ADMINISTRADOR":
-                          this.router.navigate(['/bodega']); 
-                          break;
-                      }
-                      // Redirigir al usuario
-                    });
-          },
-          error: (error) => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: error.error.respuesta
-            });
+      next: (data) => {
+        this.tokenService.login(data.respuesta.token);
+
+        // ✅ Marcar como verificado antes de redirigir
+        this.tokenService.setIsVerified(true);
+
+        const rol = this.tokenService.getRol();
+        Swal.fire({
+          title: 'Cuenta Validada',
+          text: 'La cuenta se ha validado correctamente. Bienvenido',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          // ✅ Redirigir al usuario según su rol
+          switch (rol) {
+            case "CLIENTE":
+              this.router.navigate(['/home']);
+              break;
+            case "ADMINISTRADOR":
+              this.router.navigate(['/bodega']);
+              break;
           }
         });
-  }   
+      },
+      error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.error.respuesta
+        });
+      }
+    });
+  }
 }

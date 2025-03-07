@@ -1,82 +1,93 @@
-<div class="container py-5">
-    <h1 class="text-center mb-4">Carrito de Compras</h1>
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrito de Compras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: white;
+        }
+        .productos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            width: 250px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card img {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .cantidad-input {
+            width: 60px;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Carrito de Compras</h1>
 
-    @if (carrito.length === 0) {
-        <div class="text-center">Tu carrito está vacío.</div>
-    }
+        @if (carrito.length === 0) {
+            <div class="text-center">Tu carrito está vacío.</div>
+        }
 
-    @if (carrito.length > 0) {
-        <div class="productos-container row g-4"> <!-- Alineación de tarjetas -->
-            @for (item of carrito; track item.id) {
-                <div class="col-md-4">
-                    <div class="card">
-                        <img [src]="item.imagen" class="card-img-top" alt="{{ item.nombre }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ item.nombre }}</h5>
-                            <p class="card-text">{{ item.descripcion }}</p>
-                            <p class="fw-bold text-center">$ {{ (item.precio * item.cantidad).toFixed(2) }}</p>
-                            
-                            <div class="d-flex align-items-center">
-                                <input type="number" class="form-control cantidad-input"
-                                       min="1" max="99" [value]="item.cantidad" 
-                                       (input)="actualizarCantidad(item.id, $event)">
-                                <button class="btn btn-danger w-100" (click)="eliminarDelCarrito(item.id)">
-                                    Eliminar
-                                </button>
+        @if (carrito.length > 0) {
+            <div class="productos-container row g-4">
+                @for (item of carrito; track item.id) {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img [src]="item.imagen" class="card-img-top" alt="{{ item.nombre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.nombre }}</h5>
+                                <p class="card-text">{{ item.descripcion }}</p>
+                                <p class="fw-bold text-center">$ {{ (item.precio * item.cantidad).toFixed(2) }}</p>
+                                
+                                <div class="d-flex align-items-center">
+                                    <input type="number" class="form-control cantidad-input"
+                                        min="1" max="99" [value]="item.cantidad" 
+                                        (input)="actualizarCantidad(item.id, $event)">
+                                    <button class="btn btn-danger w-100" (click)="eliminarDelCarrito(item.id)">
+                                        Eliminar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>
 
-        <div class="text-center mt-4">
-            <h3>Total: $ {{ total.toFixed(2) }}</h3>
-            <button class="btn btn-success">Finalizar Compra</button>
-        </div>
-    }
-</div>
-<style>
-    body {
-        background-color: #1c1c1c;
-        color: white;
-    }
-    .productos-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-        justify-content: center;
-        align-items: stretch;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    .card {
-        background: #222;
-        color: white;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        width: 250px;
-        min-height: 350px;
-        display: flex;
-        flex-direction: column;
-    }
-    .card-body {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-    .card img {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        height: 200px;
-        object-fit: cover;
-    }
-    .cantidad-input {
-        width: 60px;
-        text-align: center;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        margin-right: 5px;
-    }
-</style>
+            <div class="text-center mt-4">
+                <h3>Total: $ {{ total.toFixed(2) }}</h3>
+                <button class="btn btn-success">Finalizar Compra</button>
+            </div>
+        }
+    </div>
+</body>
+</html>

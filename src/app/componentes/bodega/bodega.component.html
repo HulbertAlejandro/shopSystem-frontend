@@ -1,84 +1,136 @@
-<div class="container py-5">
-    <h1 class="text-center mb-4">📦 Bodega del Supermercado</h1>
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: white;
+        }
+        .productos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            width: 250px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card img {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .cantidad-input {
+            width: 60px;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+   <div class="container py-5">
+        <h1 class="text-center mb-4">📦 Bodega del Supermercado</h1>
 
-    <!-- Filtros -->
-    <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
-        <div class="col-md-4 px-2">
-            <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
+        <!-- Filtros -->
+        <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
+            <div class="col-md-4 px-2">
+                <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
+            </div>
+
+            <div class="col-auto px-2">
+                <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+            </div>
+
+            <div class="col-md-4 px-2">
+                <select class="form-select" [(ngModel)]="categoriaSeleccionada" (change)="buscar()">
+                    <option value="">Todas las categorías</option>
+                    <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+                </select>
+            </div>
         </div>
 
-        <div class="col-auto px-2">
-            <button class="btn btn-primary" (click)="buscar()">Buscar</button>
-        </div>
+        <!-- Tabla de Bodega -->
+        <table class="table table-dark table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Stock Disponible</th>
+                    <th>Stock Mínimo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let producto of productosFiltrados" [class.table-danger]="producto.stock <= producto.stockMinimo">
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.categoria }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>{{ producto.stockMinimo }}</td>
+                    <td>
+                        <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadAgregar min="1" style="width: 55px; font-size: 14px;">
+                        <button class="btn btn-success btn-sm fw-light" (click)="agregarStock(producto, cantidadAgregar.valueAsNumber)">
+                            Agregar
+                        </button>                                        
+                        <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadRetirar min="1" style="width: 55px; font-size: 14px;">
+                        <button class="btn btn-danger btn-sm fw-light" (click)="retirarStock(producto, cantidadRetirar.valueAsNumber)">
+                            Retirar
+                        </button>
+                        <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadReabastecer min="1" style="width: 55px; font-size: 14px;">
+                        <button class="btn btn-warning btn-sm fw-light" (click)="agregarAOrden(producto, cantidadReabastecer.valueAsNumber)">
+                            Agregar a Orden
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-        <div class="col-md-4 px-2">
-            <select class="form-select" [(ngModel)]="categoriaSeleccionada" (change)="buscar()">
-                <option value="">Todas las categorías</option>
-                <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
-            </select>
-        </div>
+        <!-- Órdenes de Reabastecimiento -->
+        <h2 class="text-center mt-5">📋 Órdenes de Reabastecimiento</h2>
+        <button class="btn btn-primary mb-3" *ngIf="ordenes.length > 0" (click)="crearOrden()">
+            Crear Orden
+        </button>
+        <table class="table table-warning table-striped text-center" *ngIf="ordenes.length > 0">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Cantidad Solicitada</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let orden of ordenes">
+                    <td>{{ orden.nombre }}</td>
+                    <td>{{ orden.categoria }}</td>
+                    <td>{{ orden.cantidadSolicitada }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm fw-light" (click)="eliminarOrden(orden)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-    <!-- Tabla de Bodega -->
-    <table class="table table-dark table-striped text-center">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Stock Disponible</th>
-                <th>Stock Mínimo</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let producto of productosFiltrados" [class.table-danger]="producto.stock <= producto.stockMinimo">
-                <td>{{ producto.nombre }}</td>
-                <td>{{ producto.categoria }}</td>
-                <td>{{ producto.stock }}</td>
-                <td>{{ producto.stockMinimo }}</td>
-                <td>
-                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadAgregar min="1" style="width: 55px; font-size: 14px;">
-                    <button class="btn btn-success btn-sm fw-light" (click)="agregarStock(producto, cantidadAgregar.valueAsNumber)">
-                        Agregar
-                    </button>                                        
-                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadRetirar min="1" style="width: 55px; font-size: 14px;">
-                    <button class="btn btn-danger btn-sm fw-light" (click)="retirarStock(producto, cantidadRetirar.valueAsNumber)">
-                        Retirar
-                    </button>
-                    <input type="number" class="form-control d-inline-block mx-1 text-center" #cantidadReabastecer min="1" style="width: 55px; font-size: 14px;">
-                    <button class="btn btn-warning btn-sm fw-light" (click)="agregarAOrden(producto, cantidadReabastecer.valueAsNumber)">
-                        Agregar a Orden
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Órdenes de Reabastecimiento -->
-    <h2 class="text-center mt-5">📋 Órdenes de Reabastecimiento</h2>
-    <button class="btn btn-primary mb-3" *ngIf="ordenes.length > 0" (click)="crearOrden()">
-        Crear Orden
-    </button>
-    <table class="table table-warning table-striped text-center" *ngIf="ordenes.length > 0">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Cantidad Solicitada</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let orden of ordenes">
-                <td>{{ orden.nombre }}</td>
-                <td>{{ orden.categoria }}</td>
-                <td>{{ orden.cantidadSolicitada }}</td>
-                <td>
-                    <button class="btn btn-danger btn-sm fw-light" (click)="eliminarOrden(orden)">
-                        Eliminar
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>

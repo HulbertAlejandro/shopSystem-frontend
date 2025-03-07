@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; // ✅ Importar Router
+import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -13,18 +13,17 @@ import { TokenService } from '../../services/token.service';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] // ✅ Corregido "styleUrl" a "styleUrls"
 })
 export class LoginComponent {
   loginForm!: FormGroup;
   submitted = false;
 
-  // ✅ Agregar Router al constructor
   constructor(
     private formBuilder: FormBuilder, 
     private authService: AuthService, 
     private tokenService: TokenService,
-    private router: Router // ✅ Agregar Router
+    private router: Router
   ) {
     this.crearFormulario();
   }
@@ -45,8 +44,12 @@ export class LoginComponent {
     this.authService.iniciarSesion(loginDTO).subscribe({
       next: (data) => {
         this.tokenService.login(data.respuesta.token);
-        // ✅ Redirigir a la ventana de verificación
-        this.router.navigate(['/verificacion']); // Asegúrate de usar la ruta correcta
+        
+        // ✅ Resetear verificación en dos pasos antes de redirigir
+        this.tokenService.setIsVerified(false);
+
+        // ✅ Redirigir a la ventana de verificación antes de entrar a la app
+        this.router.navigate(['/verificacion']);
       },
       error: (error) => {
         Swal.fire({

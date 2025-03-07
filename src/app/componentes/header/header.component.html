@@ -1,0 +1,52 @@
+<header class="header">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="/">Shop System</a>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+
+          <!-- Siempre visible -->
+          <li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>
+
+          <!-- Opción de Login si no está autenticado -->
+          @if (!isLogged) {
+            <li class="nav-item"><a class="nav-link" routerLink="/login">Login</a></li>
+          }
+
+          <!-- Opciones solo si está logueado y verificado -->
+          @if (isLogged && isVerified) {
+
+            <!-- Opciones para CLIENTE -->
+            @if (rol === 'CLIENTE') {
+              <li class="nav-item"><a class="nav-link" routerLink="/carrito">Carrito</a></li>
+            }
+
+            <!-- Opciones para ADMINISTRADOR -->
+            @if (rol === 'ADMINISTRADOR') {
+              <li class="nav-item"><a class="nav-link" routerLink="/bodega">Bodega</a></li>
+            }
+
+            <!-- Menú desplegable con icono de usuario -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-2" style="font-size: 1.5rem;"></i> <!-- Ícono de usuario -->
+                {{ nombreUsuario }} <!-- Muestra el nombre -->
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" routerLink="/editar-cuenta">Editar Cuenta</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item text-danger" (click)="logout()">Logout</button></li>
+              </ul>
+            </li>
+
+          }
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -7,19 +7,18 @@ import { Observable } from 'rxjs';
 import { VerificacionDTO } from '../dto/verificacion-dto';
 import { ValidarCuentaDTO } from '../dto/validar-cuenta-dto';
 
-
 @Injectable({
- providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuthService {
-
-
   private authURL = "http://localhost:8080/api/auth";
- 
+
+  constructor(private http: HttpClient) { }
+
   public crearCuenta(cuentaDTO: CrearCuentaDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/crear-cuenta`, cuentaDTO);
   }
- 
+
   public iniciarSesion(loginDTO: LoginDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/iniciar-sesion`, loginDTO);
   }
@@ -31,10 +30,4 @@ export class AuthService {
   public activarCuenta(activarCuentaDTO: ValidarCuentaDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/activar-cuenta`, activarCuentaDTO);
   }
-
- constructor(private http: HttpClient) { 
-  
- }
-
- 
 }

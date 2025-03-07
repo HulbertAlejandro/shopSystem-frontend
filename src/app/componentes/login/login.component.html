@@ -65,6 +65,20 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +103,8 @@
             }
 
             <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid">Iniciar sesión</button>
+
+            <p class="register-link">¿No tienes cuenta? <a href="/registro">Regístrate aquí</a></p>
         </form>
     </div>
 </body>
