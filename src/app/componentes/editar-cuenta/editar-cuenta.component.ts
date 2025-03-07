@@ -96,18 +96,19 @@ export class EditarCuentaComponent implements OnInit {
   }
 
   eliminarCuenta() {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción eliminará tu cuenta permanentemente.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#ff4d4d',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Simulación de eliminación de cuenta
+    this.authService.eliminarCuenta(this.tokenService.getIDCuenta()).subscribe({
+      next: (data) => {
+        Swal.fire({
+                  title: 'Cuenta Eliminada',
+                  text: 'La cuenta se ha creado eliminado.',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar'
+                })
+                this.tokenService.logout()
+      },
+      error: (error) => {
+        console.error(error);
+        Swal.fire('Error', 'No se logro eliminar la cuenta', 'error');
       }
     });
   }

@@ -36,7 +36,16 @@ export class AuthService {
     return this.http.get<MensajeDTO>(`${this.authURL}/obtener/${id}`);
   }
 
+  public listarClientes(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-clientes`);
+  }
+
   public editarCuenta(cuentaDTO: EditarCuentaDTO): Observable<MensajeDTO> {
     return this.http.put<MensajeDTO>(`${this.authURL}/editar-perfil`, cuentaDTO);
   } 
+
+  public eliminarCuenta(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar/${id}`);
+  }
+
 }

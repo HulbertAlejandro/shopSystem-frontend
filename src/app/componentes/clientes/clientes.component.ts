@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
 
 interface Cliente {
     cedula: string;
@@ -14,17 +16,25 @@ interface Cliente {
     styleUrls: ['./clientes.component.css']
 })
 export class ClientesComponent implements OnInit {
-    clientes: Cliente[] = [];
-    clientesFiltrados: Cliente[] = [];
+    clientes: InformacionCuentaDTO[] = [];
+    clientesFiltrados: InformacionCuentaDTO[] = [];
 
-    constructor() {}
+    constructor(private authService : AuthService) {}
 
     ngOnInit(): void {
         this.cargarClientes();
     }
 
     cargarClientes(): void {
-        // Lógica para cargar clientes (se llenará después)
+        this.authService.listarClientes().subscribe({
+            next: (data) => {
+              console.log(data.respuesta); // Verificar el contenido de los datos
+              this.clientes = data.respuesta;
+            },
+            error: (error) => {
+              console.log(error.mensaje);
+            },
+          });
     }
 
     buscarCliente(filtro: string): void {
@@ -34,7 +44,7 @@ export class ClientesComponent implements OnInit {
         );
     }
 
-    eliminarCliente(cliente: Cliente): void {
+    eliminarCliente(cliente: InformacionCuentaDTO): void {
         this.clientes = this.clientes.filter(c => c.cedula !== cliente.cedula);
         this.buscarCliente('');
     }
