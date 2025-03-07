@@ -7,6 +7,7 @@ import { VerificacionComponent } from './componentes/verificacion/verificacion.c
 import { EditarCuentaComponent } from './componentes/editar-cuenta/editar-cuenta.component';
 import { CarritoComponent } from './componentes/carrito/carrito.component';
 import { BodegaComponent } from './componentes/bodega/bodega.component';
+import { ClientesComponent } from './componentes/clientes/clientes.component';
 
 export const routes: Routes = [
    { path: '', component: InicioComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
    { path: "editar-cuenta", component: EditarCuentaComponent},
    { path: "carrito", component: CarritoComponent},
    { path: "bodega", component: BodegaComponent},
+   { path: "clientes", component: ClientesComponent },
    { path: "**", pathMatch: "full", redirectTo: "" }
 ];
