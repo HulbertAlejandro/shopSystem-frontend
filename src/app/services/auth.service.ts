@@ -6,6 +6,7 @@ import { LoginDTO } from '../dto/login-dto';
 import { Observable } from 'rxjs';
 import { VerificacionDTO } from '../dto/verificacion-dto';
 import { ValidarCuentaDTO } from '../dto/validar-cuenta-dto';
+import { EditarCuentaDTO } from '../dto/editar-cuenta-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -30,4 +31,12 @@ export class AuthService {
   public activarCuenta(activarCuentaDTO: ValidarCuentaDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/activar-cuenta`, activarCuentaDTO);
   }
+
+  public obtenerCuenta(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/obtener/${id}`);
+  }
+
+  public editarCuenta(cuentaDTO: EditarCuentaDTO): Observable<MensajeDTO> {
+    return this.http.put<MensajeDTO>(`${this.authURL}/editar-perfil`, cuentaDTO);
+  } 
 }
