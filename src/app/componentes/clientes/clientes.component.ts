@@ -2,14 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
 
-interface Cliente {
-    cedula: string;
-    nombre: string;
-    email: string;
-    direccion: string;
-    telefono: string;
-}
-
 @Component({
     selector: 'app-clientes',
     templateUrl: './clientes.component.html',
@@ -19,7 +11,7 @@ export class ClientesComponent implements OnInit {
     clientes: InformacionCuentaDTO[] = [];
     clientesFiltrados: InformacionCuentaDTO[] = [];
 
-    constructor(private authService : AuthService) {}
+    constructor(private authService: AuthService) {}
 
     ngOnInit(): void {
         this.cargarClientes();
@@ -28,13 +20,14 @@ export class ClientesComponent implements OnInit {
     cargarClientes(): void {
         this.authService.listarClientes().subscribe({
             next: (data) => {
-              console.log(data.respuesta); // Verificar el contenido de los datos
-              this.clientes = data.respuesta;
+                console.log(data.respuesta); // Verificar el contenido de los datos
+                this.clientes = data.respuesta;
+                this.clientesFiltrados = [...this.clientes]; // Inicialmente, mostrar todos
             },
             error: (error) => {
-              console.log(error.mensaje);
+                console.log(error.mensaje);
             },
-          });
+        });
     }
 
     buscarCliente(filtro: string): void {
