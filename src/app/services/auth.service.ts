@@ -12,7 +12,7 @@ import { EditarCuentaDTO } from '../dto/editar-cuenta-dto';
   providedIn: 'root'
 })
 export class AuthService {
-  private authURL = "https://shopsystem.onrender.com";
+  private authURL = "https://shopsystem.onrender.com/api/auth";
 
   constructor(private http: HttpClient) { }
 
