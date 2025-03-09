@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-clientes',
@@ -22,7 +23,7 @@ export class ClientesComponent implements OnInit {
             next: (data) => {
                 console.log(data.respuesta); // Verificar el contenido de los datos
                 this.clientes = data.respuesta;
-                this.clientesFiltrados = [...this.clientes]; // Inicialmente, mostrar todos
+                this.clientesFiltrados = [...this.clientes];
             },
             error: (error) => {
                 console.log(error.mensaje);
@@ -38,7 +39,32 @@ export class ClientesComponent implements OnInit {
     }
 
     eliminarCliente(cliente: InformacionCuentaDTO): void {
-        this.clientes = this.clientes.filter(c => c.cedula !== cliente.cedula);
-        this.buscarCliente('');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'No podrás revertir esta acción',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.authService.eliminarCuentaCliente(cliente.cedula).subscribe({
+                    next: (data) => {
+                        Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
+                        this.clientes = this.clientes.filter(c => c.cedula !== cliente.cedula);
+                        this.buscarCliente('');
+                        this.cargarClientes();
+                    },  
+                    error: (error) => {
+                        console.error(error);
+                        Swal.fire('Error', 'No se logró eliminar la cuenta', 'error');
+                        
+                        this.cargarClientes();
+                    }
+                });
+            }
+        });
     }
 }
