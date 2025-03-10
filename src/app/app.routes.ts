@@ -8,6 +8,7 @@ import { EditarCuentaComponent } from './componentes/editar-cuenta/editar-cuenta
 import { CarritoComponent } from './componentes/carrito/carrito.component';
 import { BodegaComponent } from './componentes/bodega/bodega.component';
 import { ClientesComponent } from './componentes/clientes/clientes.component';
+import { DistribuidoraComponent } from './componentes/distribuidora/distribuidora.component';
 
 export const routes: Routes = [
    { path: '', component: InicioComponent },
@@ -20,5 +21,6 @@ export const routes: Routes = [
    { path: "carrito", component: CarritoComponent},
    { path: "bodega", component: BodegaComponent},
    { path: "clientes", component: ClientesComponent },
+   { path: "distribuidora", component: DistribuidoraComponent },
    { path: "**", pathMatch: "full", redirectTo: "" }
 ];
