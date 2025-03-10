@@ -48,4 +48,8 @@ export class AuthService {
     return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar/${id}`);
   }
 
+  public eliminarCuentaCliente(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cliente/${id}`);
+  }
+
 }

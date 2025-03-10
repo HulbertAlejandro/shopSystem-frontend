@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
-
-interface Cliente {
-    cedula: string;
-    nombre: string;
-    email: string;
-    direccion: string;
-    telefono: string;
-}
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-clientes',
@@ -19,7 +12,7 @@ export class ClientesComponent implements OnInit {
     clientes: InformacionCuentaDTO[] = [];
     clientesFiltrados: InformacionCuentaDTO[] = [];
 
-    constructor(private authService : AuthService) {}
+    constructor(private authService: AuthService) {}
 
     ngOnInit(): void {
         this.cargarClientes();
@@ -28,13 +21,14 @@ export class ClientesComponent implements OnInit {
     cargarClientes(): void {
         this.authService.listarClientes().subscribe({
             next: (data) => {
-              console.log(data.respuesta); // Verificar el contenido de los datos
-              this.clientes = data.respuesta;
+                console.log(data.respuesta); // Verificar el contenido de los datos
+                this.clientes = data.respuesta;
+                this.clientesFiltrados = [...this.clientes];
             },
             error: (error) => {
-              console.log(error.mensaje);
+                console.log(error.mensaje);
             },
-          });
+        });
     }
 
     buscarCliente(filtro: string): void {
@@ -45,7 +39,32 @@ export class ClientesComponent implements OnInit {
     }
 
     eliminarCliente(cliente: InformacionCuentaDTO): void {
-        this.clientes = this.clientes.filter(c => c.cedula !== cliente.cedula);
-        this.buscarCliente('');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'No podrás revertir esta acción',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.authService.eliminarCuentaCliente(cliente.cedula).subscribe({
+                    next: (data) => {
+                        Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
+                        this.clientes = this.clientes.filter(c => c.cedula !== cliente.cedula);
+                        this.buscarCliente('');
+                        this.cargarClientes();
+                    },  
+                    error: (error) => {
+                        console.error(error);
+                        Swal.fire('Error', 'No se logró eliminar la cuenta', 'error');
+                        
+                        this.cargarClientes();
+                    }
+                });
+            }
+        });
     }
 }
