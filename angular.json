@@ -27,11 +27,6 @@
               }
             ],
             "styles": [
-<<<<<<< HEAD
-              "src/styles.css"
-            ],
-            "scripts": []
-=======
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
@@ -39,7 +34,6 @@
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
->>>>>>> 4944521 (feat: ajustes en autenticación, UI y verificación 2FA)
           },
           "configurations": {
             "production": {
@@ -58,7 +52,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "optimization": false,
+              "optimization": true,
               "extractLicenses": false,
               "sourceMap": true
             }
@@ -107,8 +101,4 @@
       }
     }
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4944521 (feat: ajustes en autenticación, UI y verificación 2FA)

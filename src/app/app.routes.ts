@@ -9,6 +9,7 @@ import { CarritoComponent } from './componentes/carrito/carrito.component';
 import { BodegaComponent } from './componentes/bodega/bodega.component';
 import { ClientesComponent } from './componentes/clientes/clientes.component';
 import { DistribuidoraComponent } from './componentes/distribuidora/distribuidora.component';
+import { RegistroProductoComponent } from './componentes/registro-producto/registro-producto.component';
 
 export const routes: Routes = [
    { path: '', component: InicioComponent },
@@ -22,5 +23,6 @@ export const routes: Routes = [
    { path: "bodega", component: BodegaComponent},
    { path: "clientes", component: ClientesComponent },
    { path: "distribuidora", component: DistribuidoraComponent },
+   { path: "crear-producto", component: RegistroProductoComponent },
    { path: "**", pathMatch: "full", redirectTo: "" }
 ];

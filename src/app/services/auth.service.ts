@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { VerificacionDTO } from '../dto/verificacion-dto';
 import { ValidarCuentaDTO } from '../dto/validar-cuenta-dto';
 import { EditarCuentaDTO } from '../dto/editar-cuenta-dto';
+import { CrearProductoDTO } from '../dto/crear-producto-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -52,4 +53,7 @@ export class AuthService {
     return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cliente/${id}`);
   }
 
+  public crearProducto(crearProducto: CrearProductoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-producto`, crearProducto);
+  }
 }
