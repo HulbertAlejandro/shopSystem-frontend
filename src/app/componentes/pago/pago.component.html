@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pago del Pedido</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        .receipt-item {
+            border-bottom: 1px solid #444;
+            padding: 10px 0;
+        }
+
+        .receipt-item:last-child {
+            border-bottom: none;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .form-control, .form-select {
+            background-color: #333;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #444;
+            color: white;
+            border-color: #666;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .form-floating>label {
+            color: #bbb;
+            background-color: transparent;
+        }
+
+        .coupon-input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .coupon-btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .coupon-success {
+            color: #20c997;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .coupon-error {
+            color: #dc3545;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .btn-primary {
+            background-color: #009ee3;
+            border-color: #009ee3;
+        }
+
+        .btn-primary:hover {
+            background-color: #0088c7;
+            border-color: #0088c7;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h2>Confirmación de Pedido</h2>
+                    <p class="text-muted">Por favor revisa los detalles de tu pedido antes de proceder al pago</p>
+                </div>
+
+                <div class="row g-5">
+                    <div class="col-md-5">
+                        <div class="card bg-dark border-secondary mb-4">
+                            <div class="card-header bg-secondary bg-opacity-10">
+                                <h5 class="mb-0">Resumen del Pedido</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <ul class="list-unstyled">
+                                    <li class="receipt-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Producto Principal</h6>
+                                            <small class="text-muted">Descripción breve</small>
+                                        </div>
+                                        <span class="text-light">$99.00</span>
+                                    </li>
+                                    <li class="receipt-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Servicio Adicional</h6>
+                                            <small class="text-muted">Descripción breve</small>
+                                        </div>
+                                        <span class="text-light">$19.99</span>
+                                    </li>
+                                    <li class="receipt-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Impuestos</h6>
+                                            <small class="text-muted">IVA 21%</small>
+                                        </div>
+                                        <span class="text-light">$24.98</span>
+                                    </li>
+                                    <li class="receipt-item d-flex justify-content-between bg-secondary bg-opacity-10 py-3" id="descuento-item" style="display: none;">
+                                        <div class="text-success">
+                                            <h6 class="my-0">Descuento</h6>
+                                            <small id="codigo-cupon-text"></small>
+                                        </div>
+                                        <span class="text-success" id="descuento-monto">−$10.00</span>
+                                    </li>
+                                    <li class="receipt-item d-flex justify-content-between py-3">
+                                        <span>Total</span>
+                                        <strong class="total-amount" id="total-pagar">$132.97</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="card bg-dark border-secondary">
+                            <div class="card-header bg-secondary bg-opacity-10">
+                                <h5 class="mb-0">Información del Cliente</h5>
+                            </div>
+                            <div class="card-body">
+                                <form [formGroup]="pagoForm" (ngSubmit)="realizarPago()">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Correo electrónico</label>
+                                        <input type="email" class="form-control" id="email" formControlName="email" placeholder="tu@email.com" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre completo</label>
+                                        <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" formControlName="telefono">
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary btn-lg" type="submit">
+                                            <i class="bi bi-credit-card me-2"></i>Pagar con Mercado Pago
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto">
+        <div class="container">
+            <div class="text-center text-muted">
+                <p class="mb-1">&copy; 2024 Mi Empresa. Todos los derechos reservados.</p>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#" class="text-muted">Términos</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-muted">Privacidad</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-muted">Soporte</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función para manejar la aplicación de cupones
+        document.getElementById('aplicar-cupon').addEventListener('click', function() {
+            const cuponInput = document.getElementById('cupon');
+            const cuponCodigo = cuponInput.value.trim();
+            const cuponSuccess = document.getElementById('cupon-success');
+            const cuponError = document.getElementById('cupon-error');
+            const descuentoItem = document.getElementById('descuento-item');
+            const codigoCuponText = document.getElementById('codigo-cupon-text');
+            const totalPagar = document.getElementById('total-pagar');
+            const descuentoMonto = document.getElementById('descuento-monto');
+
+            // Ocultar mensajes anteriores
+            cuponSuccess.style.display = 'none';
+            cuponError.style.display = 'none';
+
+            if (cuponCodigo === '') {
+                cuponError.textContent = 'Por favor ingresa un código de cupón';
+                cuponError.style.display = 'block';
+                return;
+            }
+
+            // Aquí iría la lógica para validar el cupón con tu backend
+            // Este es solo un ejemplo con un cupón de prueba
+            if (cuponCodigo === 'DESCUENTO10') {
+                // Mostrar éxito
+                cuponSuccess.style.display = 'block';
+                
+                // Mostrar descuento en el resumen
+                descuentoItem.style.display = 'flex';
+                codigoCuponText.textContent = cuponCodigo;
+                descuentoMonto.textContent = '-$10.00';
+                
+                // Actualizar total (ejemplo)
+                totalPagar.textContent = '$122.97';
+                
+                // Limpiar input
+                cuponInput.value = '';
+            } else {
+                cuponError.textContent = 'Cupón no válido o expirado';
+                cuponError.style.display = 'block';
+            }
+        });
+
+        // Permitir aplicar cupón con Enter
+        document.getElementById('cupon').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('aplicar-cupon').click();
+            }
+        });
+    </script>
+</body>
+</html>
