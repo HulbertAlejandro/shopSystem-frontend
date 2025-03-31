@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { VerificacionDTO } from '../../dto/verificacion-dto';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
+import { VerificacionDTO } from '../../dto/cuenta/verificacion-dto';
 
 @Component({
   selector: 'app-verificacion',

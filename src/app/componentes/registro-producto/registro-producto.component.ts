@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import { CrearProductoDTO } from '../../dto/crear-producto-dto';
-import { TipoProducto } from '../../dto/tipo-producto';
 import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image-service.service';
+import { TipoProducto } from '../../dto/producto/tipo-producto';
+import { CrearProductoDTO } from '../../dto/producto/crear-producto-dto';
 
 @Component({
   selector: 'app-registro-producto',
@@ -31,6 +31,7 @@ export class RegistroProductoComponent {
       nombre: ['', [Validators.required]],
       tipoProducto: ['', [Validators.required]],
       imageUrl: ['', [Validators.required]],
+      descripcion: ['', [Validators.required]],
       unidades: [1, [Validators.required, Validators.min(1)]],
       precio: [0, [Validators.required, Validators.min(0.01)]]
     });
@@ -70,14 +71,13 @@ export class RegistroProductoComponent {
           });
       },
       error: (error) => {
+        console.log(this.imagenSeleccionada)
         console.error('Error al subir imagen:', error);
         Swal.fire('Error', 'No se pudo subir la imagen. Inténtelo de nuevo.', 'error');
       }
     });
   }
-  
-  
-    
+      
   registrarProducto() {
     if (this.productoForm.invalid) {
       Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');

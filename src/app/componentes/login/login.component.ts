@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { LoginDTO } from '../../dto/login-dto';
+import { LoginDTO } from '../../dto/cuenta/login-dto';
 import Swal from 'sweetalert2';
 import { TokenService } from '../../services/token.service';
 

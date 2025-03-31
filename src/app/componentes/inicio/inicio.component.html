@@ -73,10 +73,10 @@
 
         <!-- Contenedor de productos -->
         <div class="productos-container row g-4">
-            @for (producto of productosFiltrados(); track producto.id) {
+            @for (producto of productosFiltrados(); track producto.codigo) {
                 <div class="col-md-4">
                     <div class="card">
-                        <img [src]="producto.imagen" class="card-img-top" alt="{{ producto.nombre }}">
+                        <img [src]="producto.imageUrl" class="card-img-top" alt="" width="200" height="250">
                         <div class="card-body">
                             <h5 class="card-title">{{ producto.nombre }}</h5>
                             <p class="card-text">{{ producto.descripcion }}</p>

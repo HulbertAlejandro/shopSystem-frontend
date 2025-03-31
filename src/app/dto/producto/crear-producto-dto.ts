@@ -6,5 +6,6 @@ export interface CrearProductoDTO {
     tipoProducto : TipoProducto,
     imageUrl : string,
     unidades : number,
-    precio: number
+    precio: number,
+    descripcion : string
 }

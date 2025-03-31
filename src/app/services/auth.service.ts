@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CrearCuentaDTO } from '../dto/crear-cuenta-dto';
 import { MensajeDTO } from '../dto/mensaje-dto';
-import { LoginDTO } from '../dto/login-dto';
+import { LoginDTO } from '../dto/cuenta/login-dto';
 import { Observable } from 'rxjs';
-import { VerificacionDTO } from '../dto/verificacion-dto';
-import { ValidarCuentaDTO } from '../dto/validar-cuenta-dto';
-import { EditarCuentaDTO } from '../dto/editar-cuenta-dto';
-import { CrearProductoDTO } from '../dto/crear-producto-dto';
+import { CrearCuentaDTO } from '../dto/cuenta/crear-cuenta-dto';
+import { VerificacionDTO } from '../dto/cuenta/verificacion-dto';
+import { ValidarCuentaDTO } from '../dto/cuenta/validar-cuenta-dto';
+import { EditarCuentaDTO } from '../dto/cuenta/editar-cuenta-dto';
+import { CrearProductoDTO } from '../dto/producto/crear-producto-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +55,9 @@ export class AuthService {
 
   public crearProducto(crearProducto: CrearProductoDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/crear-producto`, crearProducto);
+  }
+
+  public listarProductos(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos`);
   }
 }

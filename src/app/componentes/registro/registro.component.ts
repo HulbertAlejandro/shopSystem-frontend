@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControlOptions } from '@ang
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
-import { CrearCuentaDTO } from '../../dto/crear-cuenta-dto';
 import { Router } from '@angular/router'; // Importar Router para la redirección
+import { CrearCuentaDTO } from '../../dto/cuenta/crear-cuenta-dto';
 
 @Component({
   selector: 'app-registro',
