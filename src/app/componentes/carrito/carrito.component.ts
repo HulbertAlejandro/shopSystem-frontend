@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { VistaCarritoDTO } from '../../dto/carrito/vista-carrito-dto';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
-import { ProductoCarritoDTO } from '../../dto/producto/producto-carrito-dto';
-import { MensajeDTO } from '../../dto/mensaje-dto';
 import { ActualizarItemCarritoDTO } from '../../dto/carrito/actualizar-item-carrito-dto';
+import { MensajeDTO } from '../../dto/mensaje-dto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-carrito',
@@ -21,11 +21,10 @@ export class CarritoComponent implements OnInit {
     detallesCarrito: [],
     fecha: ''
   };
-  
+
   detalles: any[] = [];
   cuponForm: FormGroup;
   cuponAplicado = false;
-  cuponInvalido = false;
   descuento = 0;
 
   constructor(
@@ -42,37 +41,31 @@ export class CarritoComponent implements OnInit {
     this.obtenerCarrito();
   }
 
-  private obtenerCarrito() {
+  private obtenerCarrito(): void {
     const idCliente = this.tokenService.getIDCuenta();
     this.authService.obtenerInformacionCarrito(idCliente).subscribe({
       next: (data) => {
         this.vistaCarrito = data.respuesta;
-        console.log(this.vistaCarrito)
-        this.cargarDatos(); // Llamar a cargarDatos después de obtener el carrito
+        this.cargarDatos();
       },
-      error: (error: any) => {
-        console.error("Error:", error);
-      }
+      error: (error) => console.error("Error al obtener el carrito:", error)
     });
   }
   
-  private cargarDatos() {
-    this.detalles = []; // Limpiar el array antes de cargar nuevos datos
-    this.vistaCarrito.detallesCarrito.forEach((detalle) => {
+  private cargarDatos(): void {
+    this.detalles = [];
+    this.vistaCarrito.detallesCarrito.forEach(detalle => {
       this.authService.obtenerProductoCarrito(detalle.idProducto).subscribe({
         next: (producto) => {
           this.detalles.push({
-            ...detalle,            // Mantener los detalles actuales del evento
-            producto,                // Añadir el evento obtenido
-            idCarrito: this.vistaCarrito.id_carrito // Añadir el id_carrito al detalle
+            ...detalle,
+            producto,
+            idCarrito: this.vistaCarrito.id_carrito
           });
         },
-        error: (error: any) => {
-          console.error("Error al obtener el evento:", error);
-        }
+        error: (error) => console.error("Error al obtener el producto:", error)
       });
     });
-    console.log(this.detalles, "Detalles");
   }
 
   actualizarCantidad(id: string, cantidad: number): void {
@@ -100,38 +93,50 @@ export class CarritoComponent implements OnInit {
   }
 
   private actualizarItemCarrito(detalle: any): void {
-    const actualizarItem : ActualizarItemCarritoDTO = {
-      idCliente : this.tokenService.getIDCuenta(),
-      idProducto : detalle.idProducto,
-      nuevaCantidad : detalle.cantidad
-    }
+    const actualizarItem: ActualizarItemCarritoDTO = {
+      idCliente: this.tokenService.getIDCuenta(),
+      idProducto: detalle.idProducto,
+      nuevaCantidad: detalle.cantidad
+    };
 
     this.authService.actualizarCantidadCarrito(actualizarItem).subscribe({
       next: () => {
         console.log('Cantidad actualizada en el carrito');
+        this.obtenerCarrito(); // 🔄 Actualizar la vista
       },
-      error: (error: any) => {
-        console.error('Error al actualizar la cantidad:', error);
-      }
+      error: (error) => console.error('Error al actualizar la cantidad:', error)
     });
   }
 
   eliminarDelCarrito(id: string): void {
-    this.detalles = this.detalles.filter(d => d.idProducto !== id);
-    if (this.detalles.length === 0) {
-      this.resetearDescuento();
-    }
+    const idCuenta = this.tokenService.getIDCuenta();
+
+    
+    this.authService.eliminarItem(id, idCuenta).subscribe({
+       next: (respuesta) => {
+        Swal.fire({
+          title: 'Producto Eliminado del Carrito',
+          text: 'El producto ha sido eliminado del carrito',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+          })
+          this.obtenerCarrito(); // 🔄 Actualizar la vista
+        },
+        error: (error) => {
+          console.log(error);
+          Swal.fire({
+          title: 'Error',
+          text: error.error.respuesta,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        }
+      });
   }
 
   aplicarCupon(): void {
-    const codigo = this.cuponForm.get('codigoCupon')?.value;
-    console.log('Aplicando cupón:', codigo);
-  }
-
-  private resetearDescuento(): void {
-    this.descuento = 0;
-    this.cuponAplicado = false;
-    this.cuponForm.reset();
+    this.cuponAplicado = true;
+    this.obtenerCarrito(); // 🔄 Actualizar la vista después de aplicar el cupón
   }
 
   finalizarCompra(): void {
@@ -143,9 +148,7 @@ export class CarritoComponent implements OnInit {
   }
 
   get subtotal(): number {
-    return this.detalles.reduce((sum, item) => {
-      return sum + ((item.producto?.precio || 0) * item.cantidad);
-    }, 0);
+    return this.detalles.reduce((sum, item) => sum + ((item.producto?.precio || 0) * item.cantidad), 0);
   }
 
   get impuesto(): number {

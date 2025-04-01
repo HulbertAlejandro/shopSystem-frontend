@@ -86,6 +86,13 @@ export class AuthService {
   actualizarCantidadCarrito(actualizarItemCarritoDTO : ActualizarItemCarritoDTO) {
     return this.http.put(`${this.authURL}/carrito/actualizar-item`,actualizarItemCarritoDTO);
   }
+
+  public eliminarItem(idProducto: string, idCliente: string): Observable<MensajeDTO> {
+  return this.http.delete<MensajeDTO>(
+    `${this.authURL}/eliminar-producto?idProducto=${idProducto}&idCliente=${idCliente}`
+  );
+}
+
   
   
 }
