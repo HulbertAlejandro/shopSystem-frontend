@@ -67,6 +67,14 @@ export class TokenService {
     return "";
   }
 
+  public getCedula(): string {
+    const token = this.getToken();
+    if (token) {
+      return this.decodePayload(token).cedula;
+    }
+    return "";
+  }
+
   public getCorreo(): string {
     const token = this.getToken();
     if (token) {
