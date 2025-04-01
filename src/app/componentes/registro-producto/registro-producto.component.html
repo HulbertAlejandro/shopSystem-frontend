@@ -42,7 +42,9 @@
             height: 50px;
             font-size: 16px;
             padding: 10px;
-            text-align: center;
+            padding-left: 15px; /* Añade esto para alinear con los otros inputs */
+            text-align: left !important; /* Fuerza alineación izquierda */
+
         }
 
         .form-control::placeholder {
@@ -100,7 +102,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-select" id="tipoProducto" formControlName="tipoProducto">
+                        <select class="form-select" id="tipoProducto" formControlName="tipoProducto" required>
+                            <option value="" selected disabled hidden>Seleccione una opción</option>
                             @for (tipo of tiposProductos; track $index) {
                                 <option [value]="tipo">{{ tipo.replace('_', ' ') }}</option>
                             }
