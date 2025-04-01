@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
 import { ProductoCarritoDTO } from '../../dto/producto/producto-carrito-dto';
 import { MensajeDTO } from '../../dto/mensaje-dto';
+import { ActualizarItemCarritoDTO } from '../../dto/carrito/actualizar-item-carrito-dto';
 
 @Component({
   selector: 'app-carrito',
@@ -73,6 +74,7 @@ export class CarritoComponent implements OnInit {
     });
     console.log(this.detalles, "Detalles");
   }
+
   actualizarCantidad(id: string, cantidad: number): void {
     const detalle = this.detalles.find(d => d.idProducto === id);
     if (detalle && cantidad >= 1 && cantidad <= 99) {
@@ -98,7 +100,20 @@ export class CarritoComponent implements OnInit {
   }
 
   private actualizarItemCarrito(detalle: any): void {
-    console.log('Actualizando cantidad:', detalle);
+    const actualizarItem : ActualizarItemCarritoDTO = {
+      idCliente : this.tokenService.getIDCuenta(),
+      idProducto : detalle.idProducto,
+      nuevaCantidad : detalle.cantidad
+    }
+
+    this.authService.actualizarCantidadCarrito(actualizarItem).subscribe({
+      next: () => {
+        console.log('Cantidad actualizada en el carrito');
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar la cantidad:', error);
+      }
+    });
   }
 
   eliminarDelCarrito(id: string): void {

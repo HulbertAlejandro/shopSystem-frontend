@@ -9,6 +9,7 @@ import { ValidarCuentaDTO } from '../dto/cuenta/validar-cuenta-dto';
 import { EditarCuentaDTO } from '../dto/cuenta/editar-cuenta-dto';
 import { CrearProductoDTO } from '../dto/producto/crear-producto-dto';
 import { ProductoCarritoDTO } from '../dto/producto/producto-carrito-dto';
+import { ActualizarItemCarritoDTO } from '../dto/carrito/actualizar-item-carrito-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -81,4 +82,10 @@ export class AuthService {
   public obtenerInformacionCarrito(idCarrito : string): Observable<MensajeDTO> {
     return this.http.get<MensajeDTO>(`${this.authURL}/carrito/obtener-informacion/${idCarrito}`);
   }
+
+  actualizarCantidadCarrito(actualizarItemCarritoDTO : ActualizarItemCarritoDTO) {
+    return this.http.put(`${this.authURL}/carrito/actualizar-item`,actualizarItemCarritoDTO);
+  }
+  
+  
 }
