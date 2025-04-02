@@ -154,9 +154,42 @@ export class CarritoComponent implements OnInit {
   }
 
   aplicarCupon(): void {
-    this.cuponAplicado = true;
-    this.calcularTotales(); // Solo actualiza cálculos
+    const codigoCupon = this.cuponForm.value.codigoCupon.trim(); // Obtener el valor ingresado
+  
+    if (!codigoCupon) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Por favor, ingresa un código de cupón válido',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
+  
+    this.authService.aplicarCupon(codigoCupon).subscribe({
+      next: (respuesta) => {
+          this.descuento = respuesta.respuesta.descuento; // Supongamos que el backend devuelve el descuento
+          this.cuponAplicado = true;
+          this.calcularTotales();
+          Swal.fire({
+            title: 'Cupón aplicado',
+            text: `Se ha aplicado un descuento de $${this.descuento.toFixed(2)}`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+      },
+      error: (error) => {
+        console.error('Error al validar el cupón:', error);
+        Swal.fire({
+          title: 'Error',
+          text: error.error.respuesta,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    });
   }
+  
 
   // Añade este nuevo método para actualizar cálculos
   private calcularTotales(): void {
@@ -181,6 +214,8 @@ export class CarritoComponent implements OnInit {
   }
 
   get total(): number {
-    return (this.subtotal - this.descuento) + this.impuesto;
+    const subtotalConDescuento = this.subtotal * (1 - this.descuento / 100);
+    return subtotalConDescuento + this.impuesto;
   }
+  
 }
