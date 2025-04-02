@@ -12,6 +12,7 @@ import { DistribuidoraComponent } from './componentes/distribuidora/distribuidor
 import { RegistroProductoComponent } from './componentes/registro-producto/registro-producto.component';
 import { PagoComponent } from './componentes/pago/pago.component';
 import { CrearCuponComponent } from './componentes/crear-cupon/crear-cupon.component';
+import { EditarProductoComponent } from './componentes/editar-producto/editar-producto.component';
 
 export const routes: Routes = [
    { path: '', component: InicioComponent },
@@ -28,6 +29,7 @@ export const routes: Routes = [
    { path: "crear-producto", component: RegistroProductoComponent },
    { path: "pago", component: PagoComponent },
    { path: "crear-cupon", component: CrearCuponComponent },
+   { path: "editar-producto", component: EditarProductoComponent},
    // Para agregar más rutas, agregar al final de la lista y añadir el import correspondiente
     // { path: '**', component: NotFoundComponent } // Este debe ir al final para que funcione correctamente
    { path: "**", pathMatch: "full", redirectTo: "" }
