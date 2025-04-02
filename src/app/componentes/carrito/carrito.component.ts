@@ -102,41 +102,66 @@ export class CarritoComponent implements OnInit {
     this.authService.actualizarCantidadCarrito(actualizarItem).subscribe({
       next: () => {
         console.log('Cantidad actualizada en el carrito');
-        this.obtenerCarrito(); // 🔄 Actualizar la vista
+        // Actualiza solo los cálculos sin recargar todo
+        this.calcularTotales();
       },
       error: (error) => console.error('Error al actualizar la cantidad:', error)
     });
   }
 
-  eliminarDelCarrito(id: string): void {
+  eliminarDelCarrito(idDetalle: string): void {
     const idCuenta = this.tokenService.getIDCuenta();
 
-    
-    this.authService.eliminarItem(id, idCuenta).subscribe({
-       next: (respuesta) => {
-        Swal.fire({
-          title: 'Producto Eliminado del Carrito',
-          text: 'El producto ha sido eliminado del carrito',
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-          })
-          this.obtenerCarrito(); // 🔄 Actualizar la vista
-        },
-        error: (error) => {
-          console.log(error);
-          Swal.fire({
-          title: 'Error',
-          text: error.error.respuesta,
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar este producto del carrito?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.authService.eliminarItem(idDetalle, idCuenta).subscribe({
+                next: (respuesta) => {
+                    // Actualización optimizada
+                    const indice = this.detalles.findIndex(d => d.idDetalleCarrito === idDetalle);
+                    if (indice !== -1) {
+                        this.detalles.splice(indice, 1);
+                        this.calcularTotales();
+                    }
+
+                    Swal.fire({
+                        title: 'Eliminado',
+                        text: 'El producto ha sido eliminado del carrito',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                },
+                error: (error) => {
+                    console.error(error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: error.error.respuesta || 'Ocurrió un error al eliminar',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
         }
-      });
+    });
   }
 
   aplicarCupon(): void {
     this.cuponAplicado = true;
-    this.obtenerCarrito(); // 🔄 Actualizar la vista después de aplicar el cupón
+    this.calcularTotales(); // Solo actualiza cálculos
+  }
+
+  // Añade este nuevo método para actualizar cálculos
+  private calcularTotales(): void {
+    // Fuerza la actualización de las propiedades calculadas
+    this.detalles = [...this.detalles];
   }
 
   finalizarCompra(): void {
