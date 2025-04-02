@@ -5,8 +5,9 @@ import { VistaCarritoDTO } from '../../dto/carrito/vista-carrito-dto';
 import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
 import { ActualizarItemCarritoDTO } from '../../dto/carrito/actualizar-item-carrito-dto';
-import { MensajeDTO } from '../../dto/mensaje-dto';
 import Swal from 'sweetalert2';
+import { CrearOrdenDTO } from '../../dto/orden/crear-orden-dto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-carrito',
@@ -30,7 +31,8 @@ export class CarritoComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     private authService: AuthService, 
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router : Router
   ) {
     this.cuponForm = this.fb.group({
       codigoCupon: ['']
@@ -45,12 +47,14 @@ export class CarritoComponent implements OnInit {
     const idCliente = this.tokenService.getIDCuenta();
     this.authService.obtenerInformacionCarrito(idCliente).subscribe({
       next: (data) => {
+        console.log("Datos del carrito recibidos:", data); // Agrega esta línea
         this.vistaCarrito = data.respuesta;
         this.cargarDatos();
       },
       error: (error) => console.error("Error al obtener el carrito:", error)
     });
   }
+
   
   private cargarDatos(): void {
     this.detalles = [];
@@ -198,12 +202,52 @@ export class CarritoComponent implements OnInit {
   }
 
   finalizarCompra(): void {
-    if (this.detalles.length === 0) {
+    if (!this.vistaCarrito || this.vistaCarrito.detallesCarrito.length === 0) {
       alert('Tu carrito está vacío');
       return;
     }
-    console.log('Finalizando compra');
+  
+    // Construcción de los ítems de la orden
+    const itemsOrden = this.vistaCarrito.detallesCarrito.map(detalle => ({
+      referencia: detalle.idProducto,  // Se usa el ID del producto como referencia
+      nombre: detalle.nombreProducto,  // Se usa el nombre del producto
+      cantidad: detalle.cantidad,  // Cantidad de unidades compradas
+      precio: detalle.precioUnitario,  // Precio unitario del producto
+      idDetalleCarrito: detalle.idDetalleCarrito // Puede ser útil para backend
+    }));
+  
+    console.log("items de la orden", itemsOrden)
+    const valorDescuento = (this.subtotal * this.descuento) / 100;
+    // Creación del objeto de la orden
+    const orden: CrearOrdenDTO = {
+      idCliente: this.tokenService.getIDCuenta(),  // ID del carrito
+      codigoPasarela: '',  // Código de pasarela de pago si aplica
+      items: itemsOrden,  // Lista de productos en la orden
+      total: this.total,
+      descuento : (this.subtotal * this.descuento) / 100,
+      impuesto : this.impuesto,  // Total calculado de la compra
+      codigoCupon: this.cuponForm.get('codigoCupon')?.value || ''  // Código de cupón si aplica
+    };
+
+    console.log("creacion de la orden", orden)
+  
+    this.authService.crearOrden(orden).subscribe({
+      next: (data) => {
+        if (data.respuesta) {
+          Swal.fire("Orden creada", "Tu orden se ha creado exitosamente.", "success");
+          this.router.navigate(['/pago'], { queryParams: { idOrden: data.respuesta } }); // ✅ Pasar ID de la orden
+        } else {
+          Swal.fire("Error", data.respuesta, "error");
+        }
+      },
+      error: (error: any) => {
+        console.error("Error al crear la orden:", error);
+        Swal.fire("Error", "Hubo un problema al crear la orden.", "error");
+      }
+    });
+    
   }
+  
 
   get subtotal(): number {
     return this.detalles.reduce((sum, item) => sum + ((item.producto?.precio || 0) * item.cantidad), 0);
@@ -217,5 +261,5 @@ export class CarritoComponent implements OnInit {
     const subtotalConDescuento = this.subtotal * (1 - this.descuento / 100);
     return subtotalConDescuento + this.impuesto;
   }
-  
+
 }

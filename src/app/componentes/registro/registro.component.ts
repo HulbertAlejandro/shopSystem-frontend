@@ -60,7 +60,7 @@ export class RegistroComponent {
           confirmButtonText: 'Aceptar'
         });
       }
-    });
+    }); 
   }
 
   passwordsMatchValidator(formGroup: FormGroup) {
