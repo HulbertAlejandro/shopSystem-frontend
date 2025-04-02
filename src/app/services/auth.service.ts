@@ -10,6 +10,7 @@ import { EditarCuentaDTO } from '../dto/cuenta/editar-cuenta-dto';
 import { CrearProductoDTO } from '../dto/producto/crear-producto-dto';
 import { ProductoCarritoDTO } from '../dto/producto/producto-carrito-dto';
 import { ActualizarItemCarritoDTO } from '../dto/carrito/actualizar-item-carrito-dto';
+import { CrearCuponDTO } from '../dto/cupon/crear-cupon-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -90,9 +91,11 @@ export class AuthService {
   public eliminarItem(idProducto: string, idCliente: string): Observable<MensajeDTO> {
   return this.http.delete<MensajeDTO>(
     `${this.authURL}/eliminar-producto?idProducto=${idProducto}&idCliente=${idCliente}`
-  );
-}
+    );
+  }
 
-  
+  public crearCupon(cuponDTO: CrearCuponDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/cupon/crear`, cuponDTO);
+  }
   
 }

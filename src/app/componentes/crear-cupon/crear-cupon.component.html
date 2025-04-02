@@ -123,13 +123,14 @@
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <select class="form-select" id="tipo" formControlName="tipo">
-                            <option value="PORCENTAJE">Porcentaje</option>
-                            <option value="MONTO_FIJO">Monto fijo</option>
-                            <option value="ENVIO_GRATIS">Envío gratis</option>
+                            @for (item of tiposCupon; track $index) {
+                                <option [value]="item">{{ item }}</option>
+                            }
                         </select>
                         <label for="tipo">Tipo de Cupón</label>
                     </div>
                 </div>
+                
             </div>
 
             <div class="row">
@@ -148,23 +149,23 @@
             </div>
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <textarea class="form-control" id="descripcion" formControlName="descripcion" style="height: 100px"></textarea>
                         <label for="descripcion">Descripción</label>
                     </div>
                 </div>
-            </div>
-
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="usoUnico" formControlName="usoUnico">
-                        <label class="form-check-label" for="usoUnico">Cupón de un solo uso</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="tipo" formControlName="estado">
+                            @for (item of estadoCupon; track $index) {
+                                <option [value]="item">{{ item }}</option>
+                            }
+                        </select>
+                        <label for="tipo">Estado de Cupón</label>
                     </div>
                 </div>
             </div>
-
             <button class="btn btn-primary w-100 mt-3" type="submit">Guardar Cupón</button>
         </form>
     </div>
