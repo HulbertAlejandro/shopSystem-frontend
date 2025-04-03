@@ -13,6 +13,7 @@ import { ActualizarItemCarritoDTO } from '../dto/carrito/actualizar-item-carrito
 import { CrearCuponDTO } from '../dto/cupon/crear-cupon-dto';
 import { AplicarCuponDTO } from '../dto/cupon/aplicar-cupon-dto';
 import { CrearOrdenDTO } from '../dto/orden/crear-orden-dto';
+import { IdOrdenDTO } from '../dto/orden/id-orden-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -106,8 +107,16 @@ export class AuthService {
     return this.http.post<MensajeDTO>(`${this.authURL}/orden/crear`, crearOrden);
   } 
 
-  public obtenerOrden(idOrden: String): Observable<MensajeDTO> {
+  public obtenerOrden(idOrden: string): Observable<MensajeDTO> {
     return this.http.get<MensajeDTO>(`${this.authURL}/orden/obtener/${idOrden}`);
   }
-  
+
+  public realizarPago(idOrden: IdOrdenDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/orden/realizar-pago`, idOrden);
+  }
+
+  public obtenerOrdenesUsuario(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/orden/usuario/${id}`);
+  }  
+
 }

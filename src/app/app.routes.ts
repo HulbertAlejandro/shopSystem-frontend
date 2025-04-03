@@ -29,7 +29,7 @@ export const routes: Routes = [
    { path: "clientes", component: ClientesComponent },
    { path: "distribuidora", component: DistribuidoraComponent },
    { path: "crear-producto", component: RegistroProductoComponent },
-   { path: "pago", component: PagoComponent },
+   { path: "pago/:id", component: PagoComponent },
    { path: "crear-cupon", component: CrearCuponComponent },
    { path: "editar-producto", component: EditarProductoComponent},
    { path: "editar-cupon", component: EditarCuponComponent},

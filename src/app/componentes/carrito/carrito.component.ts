@@ -172,8 +172,7 @@ export class CarritoComponent implements OnInit {
   
     this.authService.aplicarCupon(codigoCupon).subscribe({
       next: (respuesta) => {
-          this.descuento = respuesta.respuesta.descuento; // Supongamos que el backend devuelve el descuento
-          this.cuponAplicado = true;
+          this.descuento = respuesta.respuesta.descuento; 
           this.calcularTotales();
           Swal.fire({
             title: 'Cupón aplicado',
@@ -235,7 +234,7 @@ export class CarritoComponent implements OnInit {
       next: (data) => {
         if (data.respuesta) {
           Swal.fire("Orden creada", "Tu orden se ha creado exitosamente.", "success");
-          this.router.navigate(['/pago'], { queryParams: { idOrden: data.respuesta } }); // ✅ Pasar ID de la orden
+          this.router.navigate(['/orden']); // ✅ Pasar ID de la orden
         } else {
           Swal.fire("Error", data.respuesta, "error");
         }

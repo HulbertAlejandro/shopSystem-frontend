@@ -142,38 +142,38 @@
         @if (ordenes.length > 0) {
             <div class="row">
                 <div class="col-12">
-                    @for (orden of ordenes; track orden.id) {
-                        <div class="order-card" [class.selected]="ordenSeleccionada === orden.id">
-                            <div class="order-header" (click)="seleccionarOrden(orden.id)">
+                    @for (orden of ordenes; track orden.idOrden) {
+                        <div class="order-card" [class.selected]="ordenSeleccionada === orden.idOrden">
+                            <div class="order-header" (click)="seleccionarOrden(orden.idOrden)">
                                 <input type="radio" class="selection-radio" 
                                        name="ordenSelection"
-                                       [checked]="ordenSeleccionada === orden.id"
-                                       (click)="$event.stopPropagation(); seleccionarOrden(orden.id)">
+                                       [checked]="ordenSeleccionada === orden.idOrden"
+                                       (click)="$event.stopPropagation(); seleccionarOrden(orden.idOrden)">
                                 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h5 class="mb-0">Orden #{{ orden.id.slice(-6).toUpperCase() }}</h5>
-                                        <small class="text-muted">{{ orden.fecha_orden | date:'medium' }}</small>
+                                        <h5 class="mb-0">Orden #{{orden.idOrden}}</h5>
                                     </div>
                                     <span class="order-status" [ngClass]="{
-                                        'status-available': orden.estado === 'DISPONIBLE',
-                                        'status-completed': orden.estado === 'COMPLETADO',
-                                        'status-cancelled': orden.estado === 'CANCELADO'
+                                        'status-available': orden.estadoOrden === 'DISPONIBLE',
+                                        'status-completed': orden.estadoOrden === 'PAGADA',
+                                        'status-cancelled': orden.estadoOrden === 'CANCELADA'
                                     }">
-                                        {{ orden.estado }}
+                                        {{ orden.estadoOrden }}
                                     </span>
+                                    
                                 </div>
                             </div>
                             
                             <div class="order-body">
                                 <div class="order-items">
-                                    @for (item of orden.detallesOrden; track $index) {
+                                    @for (item of orden.items; track $index) {
                                         <div class="order-item">
                                             <div>
-                                                <h6 class="mb-1">{{ item.producto.nombre }}</h6>
+                                                <h6 class="mb-1">{{ item.nombre }}</h6>
                                                 <small class="text-muted">Cantidad: {{ item.cantidad }}</small>
                                             </div>
-                                            <span>${{ (item.producto.precio * item.cantidad).toFixed(2) }}</span>
+                                            <span>${{ (item.precio * item.cantidad).toFixed(2) }}</span>
                                         </div>
                                     }
                                 </div>
@@ -181,11 +181,11 @@
                                 <div class="order-total">
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Subtotal:</span>
-                                        <span>${{ (orden.total - orden.impuesto + orden.descuento).toFixed(2) }}</span>
+                                        <span>${{ calcularSubtotal(orden)}}</span>
                                     </div>
                                     @if (orden.descuento > 0) {
                                         <div class="d-flex justify-content-between mb-2 text-success">
-                                            <span>Descuento ({{ orden.idCupon }}):</span>
+                                            <span>Descuento ({{ orden.codigoCupon }}):</span>
                                             <span>-${{ orden.descuento.toFixed(2) }}</span>
                                         </div>
                                     }
@@ -211,9 +211,9 @@
             <div class="payment-actions">
                 <div class="selected-info">
                     <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                    Orden #{{ orden.id.slice(-6).toUpperCase() }} seleccionada
+                    Orden #{{ orden.idOrden.slice(-6).toUpperCase() }} seleccionada
                 </div>
-                <button class="btn btn-payment" (click)="procesarPago()">
+                <button class="btn btn-payment" (click)="redirigirAPago(orden.idOrden)">Pagar">
                     <i class="bi bi-credit-card me-2"></i> Pagar ${{ orden.total.toFixed(2) }}
                 </button>
             </div>
