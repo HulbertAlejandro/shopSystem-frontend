@@ -5,19 +5,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image-service.service';
 import { TipoProducto } from '../../dto/producto/tipo-producto';
-import { CrearProductoDTO } from '../../dto/producto/crear-producto-dto';
-
-// Definir la interfaz ProductoDTO si no existe
-interface ProductoDTO {
-  id: string;
-  referencia: string;
-  nombre: string;
-  tipoProducto: TipoProducto;
-  imageUrl: string;
-  descripcion: string;
-  unidades: number;
-  precio: number;
-}
+import { EditarProductoDTO } from '../../dto/producto/editar-producto-dto';
 
 @Component({
   selector: 'app-editar-producto',
@@ -32,7 +20,7 @@ export class EditarProductoComponent implements OnInit {
   imagenSeleccionada!: File;
   imagenPrevia: string | ArrayBuffer | null = null;
   productoId!: string;
-  productoOriginal!: ProductoDTO;
+  productoSistema!: EditarProductoDTO;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,16 +34,14 @@ export class EditarProductoComponent implements OnInit {
 
   ngOnInit(): void {
     this.productoId = this.route.snapshot.params['id'];
-    //this.cargarProducto();
+    this.cargarProducto();
   }
 
-  /*
   private cargarProducto(): void {
-    // Implementación temporal - deberás adaptarla a tu AuthService real
     this.authService.obtenerProducto(this.productoId).subscribe({
       next: (producto: any) => {
-        this.productoOriginal = producto;
-        this.imagenPrevia = producto.imageUrl;
+
+        this.productoSistema = producto.respuesta
         
         const tipoMostrar = this.mapearTipoProductoParaVista(producto.tipoProducto);
         
@@ -76,7 +62,6 @@ export class EditarProductoComponent implements OnInit {
       }
     });
   }
-  */
 
   private mapearTipoProductoParaVista(tipo: TipoProducto): string {
     const mapeo: Record<TipoProducto, string> = {
