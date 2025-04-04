@@ -82,10 +82,11 @@
     <div class="container py-5">
         @if (detalles.length === 0) {
             <div class="empty-cart text-center">
-                <i class="bi bi-cart-x empty-cart-icon"></i>
-                <h2>Tu carrito está vacío</h2>
-                <p class="text-muted">Agrega productos para continuar</p>
-                <a href="/eventos" class="btn btn-primary mt-3">Explorar productos</a>
+              <i class="bi bi-cart-x empty-cart-icon"></i>
+              <h2>Tu carrito está vacío</h2>
+              <button class="btn btn-primary mt-3" (click)="navigateToHome()">
+                Explorar productos
+              </button>
             </div>
         }
 

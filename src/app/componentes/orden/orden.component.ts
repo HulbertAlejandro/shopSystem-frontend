@@ -21,6 +21,10 @@ export class OrdenComponent {
   constructor(private authService : AuthService, private tokenService: TokenService, private router : Router) {
     this.obtenerOrdenesUsuario(this.tokenService.getIDCuenta());
   }
+  
+  navigateToHome(): void {
+    this.router.navigate(['/home']);
+  }
 
   obtenerOrdenesUsuario(idUsuario: string): void {
     this.authService.obtenerOrdenesUsuario(idUsuario).subscribe(ordenes => {

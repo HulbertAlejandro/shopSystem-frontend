@@ -129,13 +129,15 @@
 <body>
     <div class="container py-5" [class.mb-5]="ordenSeleccionada">
         <h1 class="mb-4"><i class="bi bi-receipt"></i> Mis Órdenes</h1>
-        
+
         @if (ordenes.length === 0) {
-            <div class="empty-orders text-center">
-                <i class="bi bi-box-seam empty-orders-icon"></i>
-                <h2>No tienes órdenes registradas</h2>
-                <p class="text-muted">Cuando realices una compra, aparecerá aquí</p>
-                <a href="/eventos" class="btn btn-primary mt-3">Explorar productos</a>
+            <div class="empty-cart text-center">
+              <i class="bi bi-box-seam empty-orders-icon"></i>
+              <h2>No tienes órdenes registradas</h2>
+            <p class="text-muted">Cuando realices una compra, aparecerá aquí</p>
+              <button class="btn btn-primary mt-3" (click)="navigateToHome()">
+                Explorar productos
+              </button>
             </div>
         }
 

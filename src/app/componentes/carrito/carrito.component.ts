@@ -43,6 +43,9 @@ export class CarritoComponent implements OnInit {
     this.obtenerCarrito();
   }
 
+  navigateToHome(): void {
+    this.router.navigate(['/home']);
+  }
   private obtenerCarrito(): void {
     const idCliente = this.tokenService.getIDCuenta();
     this.authService.obtenerInformacionCarrito(idCliente).subscribe({

@@ -1,59 +1,88 @@
 <header class="header">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" routerLink="/">Shop System</a>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand" (click)="navigateTo('/')">Shop System</a>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+
+      <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto">
+          <!-- Opción siempre visible -->
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateTo('/')">Inicio</a>
+          </li>
 
-          <!-- Siempre visible -->
-          <li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>
-
-          <!-- Opción de Login si no está autenticado -->
+          <!-- Menú para usuarios no autenticados -->
           @if (!isLogged) {
-            <li class="nav-item"><a class="nav-link" routerLink="/login">Login</a></li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="navigateTo('/login')">Login</a>
+            </li>
           }
 
-          <!-- Opciones solo si está logueado y verificado -->
-          @if (isLogged && isVerified) {
-
+          <!-- Menú para usuarios autenticados Y VERIFICADOS -->
+          @if (shouldShowUserOptions()) {
             <!-- Opciones para CLIENTE -->
-            @if (rol === 'CLIENTE') {
-              <li class="nav-item"><a class="nav-link" routerLink="/carrito">Carrito</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/pago">Pago</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/orden">Orden</a></li>
+            @if (isClient()) {
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/carrito')">Carrito</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/pago')">Pago</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/orden')">Orden</a>
+              </li>
             }
 
             <!-- Opciones para ADMINISTRADOR -->
-            @if (rol === 'ADMINISTRADOR') {
-              <li class="nav-item"><a class="nav-link" routerLink="/distribuidora">Distribuidora</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/bodega">Bodega</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/clientes">Clientes</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/crear-producto">Crear Producto</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/editar-producto">Editar Producto</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/crear-cupon">Crear Cupon</a></li>
-              <li class="nav-item"><a class="nav-link" routerLink="/editar-cupon">Editar Cupon</a></li>
-
+            @if (isAdmin()) {
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/distribuidora')">Distribuidora</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/bodega')">Bodega</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/clientes')">Clientes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/crear-producto')">Crear Producto</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/editar-producto')">Editar Producto</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/crear-cupon')">Crear Cupon</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/editar-cupon')">Editar Cupon</a>
+              </li>
             }
 
-            <!-- Menú desplegable con icono de usuario -->
+            <!-- Menú desplegable del usuario (SOLO cuando está verificado) -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle me-2" style="font-size: 1.5rem;"></i> <!-- Ícono de usuario -->
-                {{ nombreUsuario }} <!-- Muestra el nombre -->
+              <a class="nav-link dropdown-toggle d-flex align-items-center" 
+                 role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle me-2"></i>
+                {{ nombre || 'Usuario' }}
               </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" routerLink="/editar-cuenta">Editar Cuenta</a></li>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" (click)="navigateTo('/editar-cuenta')">
+                    <i class="bi bi-pencil-square me-2"></i>Editar cuenta
+                  </a>
+                </li>
                 <li><hr class="dropdown-divider"></li>
-                <li><button class="dropdown-item text-danger" (click)="logout()">Logout</button></li>
+                <li>
+                  <button class="dropdown-item text-danger" (click)="logout()">
+                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                  </button>
+                </li>
               </ul>
             </li>
-
           }
-
         </ul>
       </div>
     </div>

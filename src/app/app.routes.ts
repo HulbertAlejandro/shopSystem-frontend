@@ -15,26 +15,107 @@ import { CrearCuponComponent } from './componentes/crear-cupon/crear-cupon.compo
 import { EditarProductoComponent } from './componentes/editar-producto/editar-producto.component';
 import { EditarCuponComponent } from './componentes/editar-cupon/editar-cupon.component';
 import { OrdenComponent } from './componentes/orden/orden.component';
+import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
+import { UnauthorizedComponent } from './componentes/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
-   { path: '', component: InicioComponent },
-   { path: 'home', component: InicioComponent },
-   { path: 'login', component: LoginComponent },
-   { path: 'registro', component: RegistroComponent },
-   { path: 'verificacion-cuenta', component: VerificacionCuentaComponent },
-   { path: "verificacion", component: VerificacionComponent },
-   { path: "editar-cuenta", component: EditarCuentaComponent},
-   { path: "carrito", component: CarritoComponent},
-   { path: "bodega", component: BodegaComponent},
-   { path: "clientes", component: ClientesComponent },
-   { path: "distribuidora", component: DistribuidoraComponent },
-   { path: "crear-producto", component: RegistroProductoComponent },
-   { path: "pago/:id", component: PagoComponent },
-   { path: "crear-cupon", component: CrearCuponComponent },
-   { path: "editar-producto", component: EditarProductoComponent},
-   { path: "editar-cupon", component: EditarCuponComponent},
-   { path: "orden", component: OrdenComponent},
-   // Para agregar más rutas, agregar al final de la lista y añadir el import correspondiente
-    // { path: '**', component: NotFoundComponent } // Este debe ir al final para que funcione correctamente
-   { path: "**", pathMatch: "full", redirectTo: "" }
+  // Rutas públicas
+  { path: '', component: InicioComponent },
+  { path: 'home', component: InicioComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'registro', component: RegistroComponent },
+  { path: 'verificacion-cuenta', component: VerificacionCuentaComponent },
+  
+  // Ruta de verificación (solo requiere autenticación)
+  { 
+    path: 'verificacion', 
+    component: VerificacionComponent,
+    canActivate: [authGuard] 
+  },
+
+  // Rutas protegidas para CLIENTES (requieren autenticación + verificación + rol CLIENTE)
+  { 
+    path: 'editar-cuenta', 
+    component: EditarCuentaComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['CLIENTE', 'ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'carrito', 
+    component: CarritoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['CLIENTE'] } 
+  },
+  { 
+   path: 'carrito', 
+   component: CarritoComponent,
+   canActivate: [authGuard, roleGuard],
+   data: { 
+     expectedRoles: ['CLIENTE'],
+     reuseComponent: false // Evitar reutilización de componente
+   } 
+  },
+  { 
+    path: 'pago/:id', 
+    component: PagoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['CLIENTE'] } 
+  },
+  { 
+    path: 'orden', 
+    component: OrdenComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['CLIENTE'] } 
+  },
+
+  // Rutas protegidas para ADMINISTRADORES (requieren autenticación + verificación + rol ADMIN)
+  { 
+    path: 'bodega', 
+    component: BodegaComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'clientes', 
+    component: ClientesComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'distribuidora', 
+    component: DistribuidoraComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'crear-producto', 
+    component: RegistroProductoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'crear-cupon', 
+    component: CrearCuponComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'editar-producto', 
+    component: EditarProductoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+  { 
+    path: 'editar-cupon', 
+    component: EditarCuponComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+
+  // Ruta para errores de autorización
+  { path: 'unauthorized', component: UnauthorizedComponent },
+
+  // Redirección para rutas no encontradas
+  { path: '**', pathMatch: 'full', redirectTo: '' }
 ];
