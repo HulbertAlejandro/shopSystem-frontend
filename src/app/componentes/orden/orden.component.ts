@@ -29,7 +29,9 @@ export class OrdenComponent {
   obtenerOrdenesUsuario(idUsuario: string): void {
     this.authService.obtenerOrdenesUsuario(idUsuario).subscribe(ordenes => {
       this.ordenes = ordenes.respuesta;
-      console.log("ORDENES CARGADAS: ", this.ordenes);
+      console.log("Detalles completos de órdenes:", this.ordenes);
+      console.log("Cantidades en items:", 
+        this.ordenes.flatMap(o => o.items.map(i => `${i.nombre}: ${i.cantidad}`)));
     });
   }
 
