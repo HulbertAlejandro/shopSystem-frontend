@@ -118,8 +118,16 @@ export class AuthService {
           }
 
           public editarCupon(cuponDTO: EditarCuponDTO): Observable<MensajeDTO> {
-            return this.http.put<MensajeDTO>(`${this.authURL}/editar-producto`, cuponDTO);
+            return this.http.put<MensajeDTO>(`${this.authURL}/editar-cupon`, cuponDTO);
           } 
+
+          public eliminarCupon(id: string): Observable<MensajeDTO> {
+            return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cupon/${id}`);
+          }
+
+          public obtenerCupones(): Observable<MensajeDTO> {
+            return this.http.get<MensajeDTO>(`${this.authURL}/listar-cupones`);
+          }
       /**
       * CLIENTES
       */
@@ -136,6 +144,10 @@ export class AuthService {
       */
         public crearProducto(crearProducto: CrearProductoDTO): Observable<MensajeDTO> {
           return this.http.post<MensajeDTO>(`${this.authURL}/crear-producto`, crearProducto);
+        }
+
+        public eliminarProducto(id: string): Observable<MensajeDTO> {
+          return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-producto/${id}`);
         }
 
         public editarProducto(productoDTO: EditarProductoDTO): Observable<MensajeDTO> {

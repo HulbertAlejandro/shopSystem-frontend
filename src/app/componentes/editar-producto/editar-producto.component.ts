@@ -6,6 +6,8 @@ import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image-service.service';
 import { TipoProducto } from '../../dto/producto/tipo-producto';
 import { EditarProductoDTO } from '../../dto/producto/editar-producto-dto';
+import { InformacionProductoDTO } from '../../dto/producto/informacion-producto-dto';
+import { MensajeDTO } from '../../dto/mensaje-dto';
 
 @Component({
   selector: 'app-editar-producto',
@@ -20,7 +22,16 @@ export class EditarProductoComponent implements OnInit {
   imagenSeleccionada!: File;
   imagenPrevia: string | ArrayBuffer | null = null;
   productoId!: string;
-  productoSistema!: EditarProductoDTO;
+
+  productoLlegada: InformacionProductoDTO = {
+    referencia: '',
+    nombre: '',
+    tipoProducto: TipoProducto.ALIMENTOS,
+    imageUrl: '',
+    descripcion: '',
+    unidades: 0,
+    precio: 0
+  };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,37 +39,42 @@ export class EditarProductoComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private imagenService: ImageService
-  ) {
-    this.crearFormulario();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.productoId = this.route.snapshot.params['id'];
     this.cargarProducto();
+    this.crearFormulario();
+  }
+
+  private crearFormulario() {
+    this.productoForm = this.formBuilder.group({
+      referencia: [{ value: '', disabled: true }, [Validators.required]],
+      nombre: ['', [Validators.required]],
+      tipoProducto: ['', [Validators.required]],
+      imageUrl: ['', [Validators.required]],
+      unidades: [1, [Validators.required, Validators.min(1)]],
+      precio: [0, [Validators.required, Validators.min(0.01)]],
+      descripcion: ['', [Validators.required]]
+    });
   }
 
   private cargarProducto(): void {
     this.authService.obtenerProducto(this.productoId).subscribe({
-      next: (producto: any) => {
+      next: (data: MensajeDTO) => {
+        const producto = data.respuesta as InformacionProductoDTO;
 
-        this.productoSistema = producto.respuesta
-        
-        const tipoMostrar = this.mapearTipoProductoParaVista(producto.tipoProducto);
-        
         this.productoForm.patchValue({
           referencia: producto.referencia,
           nombre: producto.nombre,
-          tipoProducto: tipoMostrar,
+          tipoProducto: producto.tipoProducto,
           imageUrl: producto.imageUrl,
           descripcion: producto.descripcion,
           unidades: producto.unidades,
           precio: producto.precio
         });
-      },
-      error: (error: any) => {
-        console.error('Error al cargar producto:', error);
-        Swal.fire('Error', 'No se pudo cargar el producto', 'error');
-        this.router.navigate(['/productos']);
+
+        this.imagenPrevia = producto.imageUrl;
       }
     });
   }
@@ -81,18 +97,6 @@ export class EditarProductoComponent implements OnInit {
     return mapeo[tipo] || tipo;
   }
 
-  private crearFormulario() {
-    this.productoForm = this.formBuilder.group({
-      referencia: ['', [Validators.required]],
-      nombre: ['', [Validators.required]],
-      tipoProducto: ['', [Validators.required]],
-      imageUrl: ['', [Validators.required]],
-      descripcion: ['', [Validators.required]],
-      unidades: [1, [Validators.required, Validators.min(1)]],
-      precio: [0, [Validators.required, Validators.min(0.01)]]
-    });
-  }
-
   public seleccionarImagen(event: any): void {
     if (event.target.files.length > 0) {
       this.imagenSeleccionada = event.target.files[0];
@@ -109,7 +113,7 @@ export class EditarProductoComponent implements OnInit {
       Swal.fire('Error', 'Seleccione una imagen antes de subir.', 'error');
       return;
     }
-  
+
     this.imagenService.uploadImage(this.imagenSeleccionada).subscribe({
       next: (url: string) => {
         this.productoForm.patchValue({ imageUrl: url });
@@ -125,14 +129,53 @@ export class EditarProductoComponent implements OnInit {
     });
   }
 
-  /*
+  public actualizarProducto(): void {
+    if (this.productoForm.invalid) {
+      Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
+      return;
+    }
 
-  actualizarProducto() {
+    const descripcionAClave: Record<string, TipoProducto> = {
+      "Productos alimenticios": TipoProducto.ALIMENTOS,
+      "Bebidas y refrescos": TipoProducto.BEBIDAS,
+      "Productos lácteos": TipoProducto.LACTEOS,
+      "Carnes y embutidos": TipoProducto.CARNES,
+      "Panadería y repostería": TipoProducto.PANADERIA,
+      "Frutas y verduras": TipoProducto.FRUTAS_VERDURAS,
+      "Alimentos congelados": TipoProducto.CONGELADOS,
+      "Productos de limpieza": TipoProducto.LIMPIEZA,
+      "Productos de higiene personal": TipoProducto.HIGIENE,
+      "Productos para mascotas": TipoProducto.MASCOTAS,
+      "Artículos para el hogar": TipoProducto.HOGAR,
+      "Electrodomésticos y electrónica": TipoProducto.ELECTRONICA
+    };
+
+    const rawValues = this.productoForm.getRawValue();
+
+    const productoActualizado: EditarProductoDTO = {
+      ...rawValues,
+      tipoProducto: descripcionAClave[rawValues.tipoProducto]
+    };
+
+    this.authService.editarProducto(productoActualizado).subscribe({
+      next: () => {
+        Swal.fire('Producto actualizado', 'El producto se ha actualizado correctamente.', 'success')
+          .then(() => this.router.navigate(['/home']));
+      },
+      error: (error: any) => {
+        console.error(error);
+        Swal.fire('Error', error.error?.respuesta || 'Error al actualizar el producto', 'error');
+      }
+    });
+  }
+
+  public editarProducto(): void {
     if (this.productoForm.invalid) {
       Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
       return;
     }
   
+    // Mapeo para convertir de descripción legible a enum
     const descripcionAClave: Record<string, TipoProducto> = {
       "Productos alimenticios": TipoProducto.ALIMENTOS,
       "Bebidas y refrescos": TipoProducto.BEBIDAS,
@@ -148,14 +191,18 @@ export class EditarProductoComponent implements OnInit {
       "Electrodomésticos y electrónica": TipoProducto.ELECTRONICA
     };
   
-    const productoActualizado = this.productoForm.value as CrearProductoDTO;
-    productoActualizado.tipoProducto = descripcionAClave[this.productoForm.value.tipoProducto];
+    const rawValues = this.productoForm.getRawValue();
   
-    // Implementación temporal - deberás adaptarla a tu AuthService real
-    this.authService.actualizarProducto(this.productoId, productoActualizado).subscribe({
-      next: () => {
-        Swal.fire('Producto actualizado', 'El producto se ha actualizado correctamente.', 'success')
-          .then(() => this.router.navigate(['/productos']));
+    const productoActualizado: EditarProductoDTO = {
+      ...rawValues,
+      tipoProducto: descripcionAClave[rawValues.tipoProducto]
+    };
+    
+    console.log(productoActualizado.imageUrl, "url nueva")
+    this.authService.editarProducto(productoActualizado).subscribe({
+      next: (data) => {
+        Swal.fire('Producto actualizado', data.respuesta, 'success')
+          .then(() => this.router.navigate(['/home']));
       },
       error: (error: any) => {
         console.error(error);
@@ -163,10 +210,35 @@ export class EditarProductoComponent implements OnInit {
       }
     });
   }
-
-  */
-
-  cancelarEdicion() {
-    this.router.navigate(['/productos']);
+  
+  eliminarProducto(): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esta acción',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.eliminarProducto(this.productoId).subscribe({
+          next: (data) => {
+            Swal.fire('Eliminado', 'El producto ha sido eliminado.', 'success');
+            this.router.navigate(['/home']);
+          },
+          error: (error) => {
+            console.error(error);
+            Swal.fire('Error', error.error?.respuesta || 'No se logró eliminar el producto', 'error');
+          }
+        });
+      }
+    });
+  }
+  
+  
+  public cancelarEdicion(): void {
+    this.router.navigate(['/home']);
   }
 }

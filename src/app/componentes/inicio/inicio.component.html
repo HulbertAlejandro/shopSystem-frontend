@@ -133,12 +133,21 @@
                                     
                                     <!-- Selector de cantidad -->
                                     <div class="d-flex align-items-center">
-                                        <input type="number" class="form-control cantidad-input"
-                                               min="1" max="99" value="1" #cantidad>
-                                        <button class="btn btn-primary w-100" 
+                                        
+                                        @if (isClient) {
+                                        <input type="number" class="form-control cantidad-input"min="1" max="99" value="1" #cantidad>
+                                            <button class="btn btn-primary w-100" 
                                                 (click)="agregarAlCarrito(producto, cantidad.valueAsNumber)">
                                             Añadir al carrito
                                         </button>
+                                        }
+                                        @if (isAdmin) {
+                                            <button class="btn btn-primary w-100" 
+                                                (click)="editarProducto(producto.referencia)">
+                                            Editar Producto
+                                        </button>    
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>

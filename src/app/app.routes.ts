@@ -100,12 +100,12 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['ADMINISTRADOR'] } 
   },
-  { 
-    path: 'editar-producto', 
+  {
+    path: 'editar-producto/:id', // 👈🏼 parámetro agregado
     component: EditarProductoComponent,
     canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['ADMINISTRADOR'] } 
-  },
+    data: { expectedRoles: ['ADMINISTRADOR'] }
+  },  
   { 
     path: 'editar-cupon', 
     component: EditarCuponComponent,

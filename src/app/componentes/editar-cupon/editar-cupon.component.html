@@ -106,86 +106,74 @@
 <body>
     <div class="form-container">
         <form [formGroup]="cuponForm">
-            <h2 class="text-center mb-4">Editar Cupón</h2>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="codigo" formControlName="codigo" placeholder="Codigo" [readonly]="true">
-                        <label for="codigo">Código del Cupón</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre">
-                        <label for="nombre">Nombre del Cupón</label>
-                    </div>
-                </div>
+          <h2 class="text-center mb-4">Editar Cupón</h2>
+      
+          <div class="form-floating mb-3">
+            <select class="form-select" id="codigo" formControlName="codigo" (change)="onCuponSeleccionado($event)">
+              <option value="">Seleccione un código</option>
+              @for (item of cupones; track $index) {
+                <option [value]="item.codigo">{{ item.codigo }}</option>
+              }
+            </select>
+            <label for="codigo">Código del Cupón</label>
+          </div>
+      
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre">
+                <label for="nombre">Nombre del Cupón</label>
+              </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3 position-relative">
-                        <input type="number" class="form-control" id="descuento" formControlName="descuento" min="0" max="100">
-                        <label for="descuento">Valor de Descuento</label>
-                        <span class="percentage-label">%</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="tipo" formControlName="tipo">
-                            @for (item of tiposCupon; track $index) {
-                                <option [value]="item">{{ item }}</option>
-                            }
-                        </select>
-                        <label for="tipo">Tipo de Cupón</label>
-                    </div>
-                </div>
+      
+            <div class="col-md-6">
+              <div class="form-floating mb-3 position-relative">
+                <input type="number" class="form-control" id="descuento" formControlName="descuento" min="0" max="100">
+                <label for="descuento">Valor de Descuento</label>
+                <span class="percentage-label">%</span>
+              </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="datetime-local" class="form-control" id="fechaInicio" formControlName="fechaInicio">
-                        <label for="fechaInicio">Fecha de Inicio</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="datetime-local" class="form-control" id="fechaVencimiento" formControlName="fechaVencimiento">
-                        <label for="fechaVencimiento">Fecha de Vencimiento</label>
-                    </div>
-                </div>
+          </div>
+      
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <select class="form-select" id="tipo" formControlName="tipo">
+                    @for (item of tiposCupon; track $index) {
+                        <option [value]="item">{{ item }}</option>
+                      }
+                </select>
+                <label for="tipo">Tipo de Cupón</label>
+              </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="descripcion" formControlName="descripcion" style="height: 100px"></textarea>
-                        <label for="descripcion">Descripción</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="estado" formControlName="estado">
-                            @for (item of estadoCupon; track $index) {
-                                <option [value]="item">{{ item }}</option>
-                            }
-                        </select>
-                        <label for="estado">Estado de Cupón</label>
-                    </div>
-                </div>
+      
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <select class="form-select" id="estado" formControlName="estado">
+                  @for (item of estadoCupon; track $index) {
+                    <option [value]="item">{{ item }}</option>
+                  }
+                </select>
+                <label for="estado">Estado de Cupón</label>
+              </div>
             </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <button type="button" class="btn btn-danger w-100" (click)="cancelarEdicion()">Cancelar</button>
-                </div>
-                <div class="col-md-6">
-                    <button type="submit" class="btn btn-primary w-100">Actualizar Cupón</button>
-                </div>
+          </div>
+      
+          <div class="form-floating mb-3">
+            <input type="datetime-local" class="form-control" id="fechaVencimiento" formControlName="fechaVencimiento">
+            <label for="fechaVencimiento">Fecha de Vencimiento</label>
+          </div>
+      
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-danger w-100" (click)="cancelarEdicion()">Cancelar</button>
             </div>
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-primary w-100"(click)="editarCupon()">Actualizar Cupón</button>
+            </div>
+          </div>
         </form>
-    </div>
+      </div>
+      
 </body>
 </html>

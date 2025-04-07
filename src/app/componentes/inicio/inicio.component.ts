@@ -7,6 +7,7 @@ import { TokenService } from '../../services/token.service';
 import { ProductoCarritoDTO } from '../../dto/producto/producto-carrito-dto';
 import { TipoProducto } from '../../dto/producto/tipo-producto';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
@@ -22,6 +23,10 @@ export class InicioComponent {
   filtroTemp: string = '';
   categoriaSeleccionada: string = '';
   carrito: any[] = [];
+  isLogged = false;
+  isAdmin = false;
+  isClient = false;
+
 
   // Paginación
   paginaActual: number = 1;
@@ -30,9 +35,17 @@ export class InicioComponent {
   productos: ObtenerProductoDTO[] = [];
   categorias: {valor: string, texto: string, icono: string}[] = [];
 
-  constructor(private authService: AuthService, private tokenService: TokenService) {
+  constructor(private authService: AuthService, private tokenService: TokenService, private router : Router) {
     this.cargarProductos();
+    this.isLogged = this.tokenService.isLogged();
+  
+    const userInfo = this.tokenService.getUsuarioInfo();
+    if (this.isLogged && userInfo) {
+      this.isAdmin = userInfo.rol === 'ADMINISTRADOR' && userInfo.isVerified;
+      this.isClient = userInfo.rol === 'CLIENTE' && userInfo.isVerified;
+    }
   }
+  
 
   get productosPaginados() {
     const startIndex = (this.paginaActual - 1) * this.productosPorPagina;
@@ -198,5 +211,9 @@ export class InicioComponent {
     return mapeo[tipo] || TipoProducto.ALIMENTOS;
   }
 
-
+  editarProducto(id: string): void {
+    this.router.navigate(['/editar-producto', id]); // 👈🏼 navega con el ID
+  }
+  
+  
 }
