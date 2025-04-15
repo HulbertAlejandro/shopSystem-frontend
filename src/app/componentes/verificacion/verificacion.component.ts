@@ -68,7 +68,16 @@ export class VerificacionComponent {
               this.router.navigate(['/home']);
               break;
             case "ADMINISTRADOR":
+              this.router.navigate(['/home']);
+              break;
+            case "PROVEEDOR":
+              this.router.navigate(['/home']);
+              break;
+            case "AUXILIAR_BODEGA":
               this.router.navigate(['/bodega']);
+              break;
+            default:
+              this.router.navigate(['/home']); // Redirección por defecto
               break;
           }
         });

@@ -97,4 +97,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isClient(): boolean {
     return this.shouldShowUserOptions() && this.rol === 'CLIENTE';
   }
+
+  isAuxiliarBodega(): boolean {
+    return this.shouldShowUserOptions() && this.rol === 'AUXILIAR_BODEGA';
+  }
+
+  isProveedor(): boolean {
+    return this.shouldShowUserOptions() && this.rol === 'PROVEEDOR';
+  }
 }

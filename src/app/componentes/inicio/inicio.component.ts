@@ -24,7 +24,7 @@ export class InicioComponent {
   categoriaSeleccionada: string = '';
   carrito: any[] = [];
   isLogged = false;
-  isAdmin = false;
+  isProveedor = false;
   isClient = false;
 
 
@@ -41,7 +41,7 @@ export class InicioComponent {
   
     const userInfo = this.tokenService.getUsuarioInfo();
     if (this.isLogged && userInfo) {
-      this.isAdmin = userInfo.rol === 'ADMINISTRADOR' && userInfo.isVerified;
+      this.isProveedor = userInfo.rol === 'PROVEEDOR' && userInfo.isVerified;
       this.isClient = userInfo.rol === 'CLIENTE' && userInfo.isVerified;
     }
   }

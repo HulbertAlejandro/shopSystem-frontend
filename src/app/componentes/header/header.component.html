@@ -9,10 +9,6 @@
 
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto">
-          <!-- Opción siempre visible -->
-          <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/')">Inicio</a>
-          </li>
 
           <!-- Menú para usuarios no autenticados -->
           @if (!isLogged) {
@@ -25,6 +21,9 @@
           @if (shouldShowUserOptions()) {
             <!-- Opciones para CLIENTE -->
             @if (isClient()) {
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/')">Inicio</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" (click)="navigateTo('/carrito')">Carrito</a>
               </li>
@@ -39,25 +38,57 @@
             <!-- Opciones para ADMINISTRADOR -->
             @if (isAdmin()) {
               <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/distribuidora')">Distribuidora</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/bodega')">Bodega</a>
+                <a class="nav-link" (click)="navigateTo('/')">Inicio</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" (click)="navigateTo('/clientes')">Clientes</a>
               </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                  Cupon
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" (click)="navigateTo('/cupones')">Cupones</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="navigateTo('/crear-cupon')">Crear Cupon</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="navigateTo('/editar-cupon')">Editar Cupon</a>
+                  </li>
+                </ul>
+              </li>
+            }
+
+            <!-- Opciones para AUXILIAR_BODEGA -->
+            @if (isAuxiliarBodega()) {
               <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/crear-producto')">Crear Producto</a>
+                <a class="nav-link" (click)="navigateTo('/bodega')">Bodega</a>
+              </li>
+            }
+
+            <!-- Opciones para PROVEEDOR -->
+            @if (isProveedor()) {
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/')">Inicio</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/editar-producto')">Editar Producto</a>
+                <a class="nav-link" (click)="navigateTo('/distribuidora')">Distribuidora</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/crear-cupon')">Crear Cupon</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" (click)="navigateTo('/editar-cupon')">Editar Cupon</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                  Productos
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" (click)="navigateTo('/crear-producto')">Crear Producto</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="navigateTo('/editar-producto')">Editar Producto</a>
+                  </li>
+                </ul>
               </li>
             }
 

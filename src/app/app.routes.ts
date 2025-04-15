@@ -18,6 +18,7 @@ import { OrdenComponent } from './componentes/orden/orden.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 import { UnauthorizedComponent } from './componentes/unauthorized/unauthorized.component';
+import { CuponesComponent } from './componentes/cupones/cupones.component';
 
 export const routes: Routes = [
   // Rutas públicas
@@ -34,27 +35,20 @@ export const routes: Routes = [
     canActivate: [authGuard] 
   },
 
-  // Rutas protegidas para CLIENTES (requieren autenticación + verificación + rol CLIENTE)
+  // Rutas compartidas (para todos los usuarios autenticados y verificados)
   { 
     path: 'editar-cuenta', 
     component: EditarCuentaComponent,
     canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['CLIENTE', 'ADMINISTRADOR'] } 
+    data: { expectedRoles: ['CLIENTE', 'ADMINISTRADOR', 'AUXILIAR_BODEGA', 'PROVEEDOR'] } 
   },
+
+  // Rutas protegidas para CLIENTES
   { 
     path: 'carrito', 
     component: CarritoComponent,
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['CLIENTE'] } 
-  },
-  { 
-   path: 'carrito', 
-   component: CarritoComponent,
-   canActivate: [authGuard, roleGuard],
-   data: { 
-     expectedRoles: ['CLIENTE'],
-     reuseComponent: false // Evitar reutilización de componente
-   } 
   },
   { 
     path: 'pago/:id', 
@@ -69,13 +63,7 @@ export const routes: Routes = [
     data: { expectedRoles: ['CLIENTE'] } 
   },
 
-  // Rutas protegidas para ADMINISTRADORES (requieren autenticación + verificación + rol ADMIN)
-  { 
-    path: 'bodega', 
-    component: BodegaComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['ADMINISTRADOR'] } 
-  },
+  // Rutas protegidas para ADMINISTRADORES
   { 
     path: 'clientes', 
     component: ClientesComponent,
@@ -83,14 +71,8 @@ export const routes: Routes = [
     data: { expectedRoles: ['ADMINISTRADOR'] } 
   },
   { 
-    path: 'distribuidora', 
-    component: DistribuidoraComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['ADMINISTRADOR'] } 
-  },
-  { 
-    path: 'crear-producto', 
-    component: RegistroProductoComponent,
+    path: 'cupones', 
+    component: CuponesComponent,
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['ADMINISTRADOR'] } 
   },
@@ -100,17 +82,39 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['ADMINISTRADOR'] } 
   },
-  {
-    path: 'editar-producto/:id', // 👈🏼 parámetro agregado
-    component: EditarProductoComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['ADMINISTRADOR'] }
-  },  
   { 
     path: 'editar-cupon', 
     component: EditarCuponComponent,
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['ADMINISTRADOR'] } 
+  },
+
+  // Rutas protegidas para AUXILIAR_BODEGA
+  { 
+    path: 'bodega', 
+    component: BodegaComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['AUXILIAR_BODEGA'] } 
+  },
+
+  // Rutas protegidas para PROVEEDORES
+  { 
+    path: 'distribuidora', 
+    component: DistribuidoraComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['PROVEEDOR'] } 
+  },
+  { 
+    path: 'crear-producto', 
+    component: RegistroProductoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['PROVEEDOR'] } 
+  },
+  {
+    path: 'editar-producto/:id',
+    component: EditarProductoComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['PROVEEDOR'] }
   },
 
   // Ruta para errores de autorización
