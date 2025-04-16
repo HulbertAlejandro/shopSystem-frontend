@@ -96,8 +96,8 @@
                 <tbody>
                     @for (cupon of cuponesFiltrados; track cupon.codigo) {
                     <tr>
-                        <td class="align-middle">{{ cupon.codigo }}</td>
-                        <td class="align-middle">{{ cupon.nombre }}</td>
+                        <td class="align-middle text-center">{{ cupon.codigo }}</td>
+                        <td class="align-middle text-center">{{ cupon.nombre }}</td>
                         <td class="align-middle text-center">{{ cupon.descuento }}%</td>
                         <td class="align-middle text-center">{{ cupon.tipo }}</td>
                         <td class="align-middle text-center">
@@ -110,13 +110,9 @@
                         <td class="align-middle text-center">{{ cupon.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
                         <td class="align-middle text-center">
                             <div class="d-flex justify-content-center">
-                                <button class="btn btn-warning btn-sm btn-action" 
-                                        (click)="editarCupon(cupon.codigo)">
-                                    Editar
-                                </button>
                                 <button class="btn btn-danger btn-sm btn-action" 
                                         (click)="eliminarCupon(cupon.codigo)">
-                                    Eliminar
+                                        Anular
                                 </button>
                             </div>
                         </td>

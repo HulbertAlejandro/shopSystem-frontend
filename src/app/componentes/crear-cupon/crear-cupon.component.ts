@@ -32,8 +32,19 @@ export class CrearCuponComponent {
   }
 
   crearCupon(): void {
-    const nuevoCupon = this.cuponForm.value as CrearCuponDTO;
-
+    const formValue = this.cuponForm.value;
+  
+    const nuevoCupon: CrearCuponDTO = {
+      ...formValue,
+      codigo: formValue.codigo.trim(),
+      nombre: formValue.nombre.trim(),
+      descripcion: formValue.descripcion.trim(),
+      fechaInicio: new Date(formValue.fechaInicio).toISOString(),
+      fechaVencimiento: new Date(formValue.fechaVencimiento).toISOString()
+    };
+  
+    console.log(nuevoCupon); // ✅ Aquí puedes verificar el formato antes de enviar
+  
     this.authService.crearCupon(nuevoCupon).subscribe({
       next: (data) => {
         Swal.fire({
@@ -44,15 +55,17 @@ export class CrearCuponComponent {
         });
       },
       error: (error) => {
+        console.error(error); // <-- muy útil para ver qué campo falló
         Swal.fire({
           title: 'Error',
-          text: error.error.respuesta,
+          text: error.error?.respuesta || 'Error al crear el cupón',
           icon: 'error',
           confirmButtonText: 'Aceptar'
         });
       }
     });
   }
+  
 
   cancelar(): void {
     if (confirm('¿Está seguro que desea cancelar? Los cambios no guardados se perderán.')) {

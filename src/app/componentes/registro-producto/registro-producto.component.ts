@@ -37,8 +37,6 @@ export class RegistroProductoComponent {
     });
   }
 
-
-
   public seleccionarImagen(event: any): void {
     if (event.target.files.length > 0) {
       this.imagenSeleccionada = event.target.files[0];
@@ -84,23 +82,10 @@ export class RegistroProductoComponent {
       return;
     }
   
-    const descripcionAClave: Record<string, string> = {
-      "Productos alimenticios": "ALIMENTOS",
-      "Bebidas y refrescos": "BEBIDAS",
-      "Productos lácteos": "LACTEOS",
-      "Carnes y embutidos": "CARNES",
-      "Panadería y repostería": "PANADERIA",
-      "Frutas y verduras": "FRUTAS_VERDURAS",
-      "Alimentos congelados": "CONGELADOS",
-      "Productos de limpieza": "LIMPIEZA",
-      "Productos de higiene personal": "HIGIENE",
-      "Productos para mascotas": "MASCOTAS",
-      "Artículos para el hogar": "HOGAR",
-      "Electrodomésticos y electrónica": "ELECTRONICA"
+    const nuevoProducto: CrearProductoDTO = {
+      ...this.productoForm.value,
+      tipoProducto: this.productoForm.value.tipoProducto as TipoProducto
     };
-  
-    const nuevoProducto = this.productoForm.value as CrearProductoDTO;
-    nuevoProducto.tipoProducto = descripcionAClave[this.productoForm.value.tipoProducto] as TipoProducto;
   
     console.log('Datos del producto a registrar:', nuevoProducto);
   
@@ -113,6 +98,7 @@ export class RegistroProductoComponent {
       }
     });
   }
+  
   
     
 }

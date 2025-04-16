@@ -129,76 +129,22 @@ export class EditarProductoComponent implements OnInit {
     });
   }
 
-  public actualizarProducto(): void {
-    if (this.productoForm.invalid) {
-      Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
-      return;
-    }
-
-    const descripcionAClave: Record<string, TipoProducto> = {
-      "Productos alimenticios": TipoProducto.ALIMENTOS,
-      "Bebidas y refrescos": TipoProducto.BEBIDAS,
-      "Productos lácteos": TipoProducto.LACTEOS,
-      "Carnes y embutidos": TipoProducto.CARNES,
-      "Panadería y repostería": TipoProducto.PANADERIA,
-      "Frutas y verduras": TipoProducto.FRUTAS_VERDURAS,
-      "Alimentos congelados": TipoProducto.CONGELADOS,
-      "Productos de limpieza": TipoProducto.LIMPIEZA,
-      "Productos de higiene personal": TipoProducto.HIGIENE,
-      "Productos para mascotas": TipoProducto.MASCOTAS,
-      "Artículos para el hogar": TipoProducto.HOGAR,
-      "Electrodomésticos y electrónica": TipoProducto.ELECTRONICA
-    };
-
-    const rawValues = this.productoForm.getRawValue();
-
-    const productoActualizado: EditarProductoDTO = {
-      ...rawValues,
-      tipoProducto: descripcionAClave[rawValues.tipoProducto]
-    };
-
-    this.authService.editarProducto(productoActualizado).subscribe({
-      next: () => {
-        Swal.fire('Producto actualizado', 'El producto se ha actualizado correctamente.', 'success')
-          .then(() => this.router.navigate(['/home']));
-      },
-      error: (error: any) => {
-        console.error(error);
-        Swal.fire('Error', error.error?.respuesta || 'Error al actualizar el producto', 'error');
-      }
-    });
-  }
-
   public editarProducto(): void {
     if (this.productoForm.invalid) {
       Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
       return;
     }
-  
-    // Mapeo para convertir de descripción legible a enum
-    const descripcionAClave: Record<string, TipoProducto> = {
-      "Productos alimenticios": TipoProducto.ALIMENTOS,
-      "Bebidas y refrescos": TipoProducto.BEBIDAS,
-      "Productos lácteos": TipoProducto.LACTEOS,
-      "Carnes y embutidos": TipoProducto.CARNES,
-      "Panadería y repostería": TipoProducto.PANADERIA,
-      "Frutas y verduras": TipoProducto.FRUTAS_VERDURAS,
-      "Alimentos congelados": TipoProducto.CONGELADOS,
-      "Productos de limpieza": TipoProducto.LIMPIEZA,
-      "Productos de higiene personal": TipoProducto.HIGIENE,
-      "Productos para mascotas": TipoProducto.MASCOTAS,
-      "Artículos para el hogar": TipoProducto.HOGAR,
-      "Electrodomésticos y electrónica": TipoProducto.ELECTRONICA
-    };
-  
+
     const rawValues = this.productoForm.getRawValue();
-  
+
     const productoActualizado: EditarProductoDTO = {
       ...rawValues,
-      tipoProducto: descripcionAClave[rawValues.tipoProducto]
+      tipoProducto: rawValues.tipoProducto as TipoProducto
     };
-    
-    console.log(productoActualizado.imageUrl, "url nueva")
+
+    console.log(productoActualizado);
+    console.log(productoActualizado.imageUrl, "url nueva");
+
     this.authService.editarProducto(productoActualizado).subscribe({
       next: (data) => {
         Swal.fire('Producto actualizado', data.respuesta, 'success')
@@ -210,7 +156,7 @@ export class EditarProductoComponent implements OnInit {
       }
     });
   }
-  
+
   eliminarProducto(): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -236,8 +182,7 @@ export class EditarProductoComponent implements OnInit {
       }
     });
   }
-  
-  
+
   public cancelarEdicion(): void {
     this.router.navigate(['/home']);
   }
