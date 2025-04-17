@@ -1,0 +1,10 @@
+.form-select:not(:-internal-list-box) {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}
+
+.form-select:focus ~ label,
+.form-select:not(:placeholder-shown) ~ label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    opacity: 0.65;
+}

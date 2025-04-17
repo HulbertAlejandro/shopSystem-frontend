@@ -34,7 +34,6 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
-        /* 🔹 Input de cantidad */
         .cantidad-input {
             width: 60px;
             text-align: center;
@@ -42,59 +41,146 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+        .sidebar {
+            background-color: #222;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar-item {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: #007bff;
+        }
+        .pagination .page-item .page-link {
+            background-color: #222;
+            border-color: #444;
+            color: white;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .main-content {
+            padding-left: 30px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                padding-left: 0;
+                margin-top: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <h1 class="text-center mb-4">Nuestros Productos</h1>
-    
-        <!-- Contenedor de filtros centrado -->
-        <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
-            <!-- Input de búsqueda -->
-            <div class="col-md-4 px-2">
-                <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
-            </div>
-
-            <!-- Botón de búsqueda -->
-            <div class="col-auto px-2">
-                <button class="btn btn-primary" (click)="buscar()">Buscar</button>
-            </div>
-
-            <!-- Combo box de categorías -->
-            <div class="col-md-4 px-2">
-                <select class="form-select" [(ngModel)]="categoriaSeleccionada">
-                    <option value="">Todas las categorías</option>
-                    @for (categoria of categorias; track categoria) {
-                        <option [value]="categoria">{{ categoria }}</option>
-                    }
-                </select>
-            </div>
-        </div>
-
-        <!-- Contenedor de productos -->
-        <div class="productos-container row g-4">
-            @for (producto of productosFiltrados(); track producto.id) {
-                <div class="col-md-4">
-                    <div class="card">
-                        <img [src]="producto.imagen" class="card-img-top" alt="{{ producto.nombre }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto.nombre }}</h5>
-                            <p class="card-text">{{ producto.descripcion }}</p>
-                            <p class="fw-bold text-center">$ {{ producto.precio.toFixed(2) }}</p>
-                            
-                            <!-- 🔹 Selector de cantidad -->
-                            <div class="d-flex align-items-center">
-                                <input type="number" class="form-control cantidad-input"
-                                       min="1" max="99" value="1" #cantidad>
-                                <button class="btn btn-primary w-100" 
-                                        (click)="agregarAlCarrito(producto, cantidad.valueAsNumber)">
-                                    Añadir al carrito
-                                </button>
-                            </div>
+        <div class="d-flex flex-row">
+            <!-- Barra lateral de categorías -->
+            <div class="flex-shrink-0 me-4" style="width: 250px;">
+                <div class="sidebar">
+                    <h5 class="text-center mb-4">Categorías</h5>
+                    <div class="sidebar-item" 
+                         [class.active]="categoriaSeleccionada === ''"
+                         (click)="seleccionarCategoria('')">
+                        Todas las categorías
+                    </div>
+                    @for (categoria of categorias; track categoria.valor) {
+                        <div class="sidebar-item d-flex align-items-center"
+                             [class.active]="categoriaSeleccionada === categoria.valor"
+                             (click)="seleccionarCategoria(categoria.valor)">
+                            <span class="me-2">{{ categoria.icono }}</span>
+                            {{ categoria.texto }}
                         </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="flex-grow-1">
+                <h1 class="text-center mb-4">Nuestros Productos</h1>
+            
+                <!-- Contenedor de filtros centrado -->
+                <div class="d-flex flex-wrap justify-content-center align-items-center mb-4">
+                    <!-- Input de búsqueda -->
+                    <div class="col-md-6 px-2">
+                        <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="filtroTemp">
+                    </div>
+
+                    <!-- Botón de búsqueda -->
+                    <div class="col-auto px-2">
+                        <button class="btn btn-primary" (click)="buscar()">Buscar</button>
                     </div>
                 </div>
-            }
+
+                <!-- Contenedor de productos -->
+                <div class="productos-container row g-4">
+                    @for (producto of productosPaginados; track producto.referencia) {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <img [src]="producto.imageUrl" class="card-img-top" alt="" width="200" height="250">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                                    <p class="card-text">{{ producto.descripcion }}</p>
+                                    <p class="fw-bold text-center">$ {{ producto.precio.toFixed(2) }}</p>
+                                    
+                                    <!-- Selector de cantidad -->
+                                    <div class="d-flex align-items-center">
+                                        
+                                        @if (isClient) {
+                                        <input type="number" class="form-control cantidad-input"min="1" max="99" value="1" #cantidad>
+                                            <button class="btn btn-primary w-100" 
+                                                (click)="agregarAlCarrito(producto, cantidad.valueAsNumber)">
+                                            Añadir al carrito
+                                        </button>
+                                        }
+                                        @if (isProveedor) {
+                                            <button class="btn btn-primary w-100" 
+                                                (click)="editarProducto(producto.referencia)">
+                                            Editar Producto
+                                        </button>    
+                                        }
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Paginación -->
+                <nav aria-label="Page navigation" class="mt-4" *ngIf="productosFiltrados().length > productosPorPagina">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" [class.disabled]="paginaActual === 1">
+                            <a class="page-link" (click)="cambiarPagina(paginaActual - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @for (page of getPaginas(); track page) {
+                            <li class="page-item" [class.active]="page === paginaActual">
+                                <a class="page-link" (click)="cambiarPagina(page)">{{ page }}</a>
+                            </li>
+                        }
+                        <li class="page-item" [class.disabled]="paginaActual === getTotalPaginas()">
+                            <a class="page-link" (click)="cambiarPagina(paginaActual + 1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Mostrar total de productos -->
+                <div class="text-center text-muted mt-2">
+                    Mostrando {{ getProductosMostradosInicio() }}-{{ getProductosMostradosFin() }} de {{ productosFiltrados().length }} productos
+                </div>
+            </div>
         </div>
     </div>        
 </body>

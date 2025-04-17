@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ObtenerProductoDTO } from '../../dto/producto/obtener-producto-dto';
+import { AuthService } from '../../services/auth.service';
+import { TokenService } from '../../services/token.service';
+import { ProductoCarritoDTO } from '../../dto/producto/producto-carrito-dto';
+import { TipoProducto } from '../../dto/producto/tipo-producto';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
@@ -9,69 +16,204 @@ import { CommonModule } from '@angular/common';
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css']
 })
+// ... (imports y decorador permanecen iguales)
+
 export class InicioComponent {
   filtro: string = '';
   filtroTemp: string = '';
   categoriaSeleccionada: string = '';
   carrito: any[] = [];
+  isLogged = false;
+  isProveedor = false;
+  isClient = false;
 
-  productos = [
-    { id: 1, nombre: 'Manzana', categoria: 'Frutas', descripcion: 'Frescas y deliciosas.', precio: 1.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 2, nombre: 'Plátano', categoria: 'Frutas', descripcion: 'Rico en potasio.', precio: 0.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 3, nombre: 'Leche', categoria: 'Lácteos', descripcion: 'Entera y sin conservantes.', precio: 2.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 4, nombre: 'Pan', categoria: 'Panadería', descripcion: 'Recién horneado.', precio: 1.20, imagen: 'https://via.placeholder.com/200' },
-    { id: 5, nombre: 'Queso', categoria: 'Lácteos', descripcion: 'Madurado por 6 meses.', precio: 4.75, imagen: 'https://via.placeholder.com/200' },
-    { id: 6, nombre: 'Tomates', categoria: 'Verduras', descripcion: 'Orgánicos y jugosos.', precio: 2.10, imagen: 'https://via.placeholder.com/200' },
-    { id: 7, nombre: 'Zanahorias', categoria: 'Verduras', descripcion: 'Dulces y crujientes.', precio: 1.30, imagen: 'https://via.placeholder.com/200' },
-    { id: 8, nombre: 'Cebollas', categoria: 'Verduras', descripcion: 'Perfectas para cocinar.', precio: 1.00, imagen: 'https://via.placeholder.com/200' },
-    { id: 9, nombre: 'Pechuga de Pollo', categoria: 'Carnes', descripcion: 'Sin hueso y lista para cocinar.', precio: 5.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 10, nombre: 'Carne de Res', categoria: 'Carnes', descripcion: 'Corte premium para asar.', precio: 10.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 11, nombre: 'Jamon', categoria: 'Carnes', descripcion: 'Fino y de gran sabor.', precio: 3.25, imagen: 'https://via.placeholder.com/200' },
-    { id: 12, nombre: 'Salchichas', categoria: 'Carnes', descripcion: 'Ideales para parrilladas.', precio: 2.80, imagen: 'https://via.placeholder.com/200' },
-    { id: 13, nombre: 'Atún en lata', categoria: 'Abarrotes', descripcion: 'Conservado en agua.', precio: 1.75, imagen: 'https://via.placeholder.com/200' },
-    { id: 14, nombre: 'Aceite de Oliva', categoria: 'Abarrotes', descripcion: 'Extra virgen.', precio: 7.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 15, nombre: 'Arroz', categoria: 'Abarrotes', descripcion: 'Grano largo y suelto.', precio: 2.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 16, nombre: 'Harina', categoria: 'Abarrotes', descripcion: 'Perfecta para hornear.', precio: 1.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 17, nombre: 'Cereal', categoria: 'Desayuno', descripcion: 'Rico en fibra.', precio: 3.90, imagen: 'https://via.placeholder.com/200' },
-    { id: 18, nombre: 'Galletas', categoria: 'Snacks', descripcion: 'Dulces y crujientes.', precio: 2.30, imagen: 'https://via.placeholder.com/200' },
-    { id: 19, nombre: 'Papas Fritas', categoria: 'Snacks', descripcion: 'Sabor BBQ.', precio: 1.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 20, nombre: 'Chocolate', categoria: 'Snacks', descripcion: 'Con almendras.', precio: 2.75, imagen: 'https://via.placeholder.com/200' },
-    { id: 21, nombre: 'Jugo de Naranja', categoria: 'Bebidas', descripcion: '100% natural.', precio: 3.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 22, nombre: 'Refresco', categoria: 'Bebidas', descripcion: 'Con gas y azúcar.', precio: 1.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 23, nombre: 'Cerveza', categoria: 'Bebidas', descripcion: 'Lager premium.', precio: 4.00, imagen: 'https://via.placeholder.com/200' },
-    { id: 24, nombre: 'Vino Tinto', categoria: 'Bebidas', descripcion: 'Cabernet Sauvignon.', precio: 12.99, imagen: 'https://via.placeholder.com/200' },
-    { id: 25, nombre: 'Shampoo', categoria: 'Higiene', descripcion: 'Nutre y fortalece.', precio: 5.75, imagen: 'https://via.placeholder.com/200' },
-    { id: 26, nombre: 'Jabón de Tocador', categoria: 'Higiene', descripcion: 'Con aloe vera.', precio: 1.20, imagen: 'https://via.placeholder.com/200' },
-    { id: 27, nombre: 'Pasta de Dientes', categoria: 'Higiene', descripcion: 'Protección total.', precio: 3.30, imagen: 'https://via.placeholder.com/200' },
-    { id: 28, nombre: 'Detergente', categoria: 'Limpieza', descripcion: 'Elimina manchas difíciles.', precio: 6.50, imagen: 'https://via.placeholder.com/200' },
-    { id: 29, nombre: 'Suavizante', categoria: 'Limpieza', descripcion: 'Aroma duradero.', precio: 4.40, imagen: 'https://via.placeholder.com/200' },
-    { id: 30, nombre: 'Papel Higiénico', categoria: 'Higiene', descripcion: 'Doble hoja.', precio: 5.99, imagen: 'https://via.placeholder.com/200' }
-  ];
 
-  categorias = [...new Set(this.productos.map(p => p.categoria))];
+  // Paginación
+  paginaActual: number = 1;
+  productosPorPagina: number = 6;
+
+  productos: ObtenerProductoDTO[] = [];
+  categorias: {valor: string, texto: string, icono: string}[] = [];
+
+  constructor(private authService: AuthService, private tokenService: TokenService, private router : Router) {
+    this.cargarProductos();
+    this.isLogged = this.tokenService.isLogged();
+  
+    const userInfo = this.tokenService.getUsuarioInfo();
+    if (this.isLogged && userInfo) {
+      this.isProveedor = userInfo.rol === 'PROVEEDOR' && userInfo.isVerified;
+      this.isClient = userInfo.rol === 'CLIENTE' && userInfo.isVerified;
+    }
+  }
+  
+
+  get productosPaginados() {
+    const startIndex = (this.paginaActual - 1) * this.productosPorPagina;
+    const endIndex = startIndex + this.productosPorPagina;
+    return this.productosFiltrados().slice(startIndex, endIndex);
+  }
 
   productosFiltrados() {
-    return this.productos.filter(p => 
-      p.nombre.toLowerCase().includes(this.filtro.toLowerCase()) &&
-      (this.categoriaSeleccionada === '' || p.categoria === this.categoriaSeleccionada)
-    );
+    return this.productos.filter(p => {
+      const coincideNombre = p.nombre.toLowerCase().includes(this.filtro.toLowerCase());
+      const coincideCategoria = this.categoriaSeleccionada === '' || 
+                             p.tipoProducto === this.categoriaSeleccionada;
+      return coincideNombre && coincideCategoria;
+    });
   }
 
   buscar() {
     this.filtro = this.filtroTemp;
+    this.paginaActual = 1;
   }
 
-  agregarAlCarrito(producto: any, cantidad: number) {
-    if (cantidad < 1) return; // Evita agregar cantidades inválidas
-
-    const productoEnCarrito = this.carrito.find(item => item.id === producto.id);
-
-    if (productoEnCarrito) {
-        productoEnCarrito.cantidad += cantidad; // Aumenta la cantidad si ya existe en el carrito
-    } else {
-        this.carrito.push({ ...producto, cantidad }); // Agrega con la cantidad seleccionada
+  cambiarPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.getTotalPaginas()) {
+      this.paginaActual = pagina;
+      window.scrollTo(0, 0);
     }
-
-    console.log("Carrito actualizado:", this.carrito);
   }
+
+  seleccionarCategoria(categoria: string) {
+    this.categoriaSeleccionada = categoria;
+    this.paginaActual = 1;
+  }
+
+  limpiarFiltros() {
+    this.categoriaSeleccionada = '';
+    this.filtro = '';
+    this.filtroTemp = '';
+    this.paginaActual = 1;
+  }
+
+  getTotalPaginas(): number {
+    return Math.ceil(this.productosFiltrados().length / this.productosPorPagina);
+  }
+
+  getPaginas(): number[] {
+    const totalPaginas = this.getTotalPaginas();
+    const paginas: number[] = [];
+    
+    // Mostrar máximo 5 páginas en la paginación
+    let inicio = Math.max(1, this.paginaActual - 2);
+    let fin = Math.min(totalPaginas, inicio + 4);
+    
+    // Ajustar si estamos cerca del final
+    if (fin - inicio < 4 && inicio > 1) {
+      inicio = Math.max(1, fin - 4);
+    }
+    
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+    
+    return paginas;
+  }
+
+  getProductosMostradosInicio(): number {
+    return (this.paginaActual - 1) * this.productosPorPagina + 1;
+  }
+
+  getProductosMostradosFin(): number {
+    return Math.min(this.paginaActual * this.productosPorPagina, this.productosFiltrados().length);
+  }
+
+  cargarProductos(): void {
+    this.authService.listarProductos().subscribe({
+      next: (data) => {
+        this.productos = data.respuesta;
+        this.actualizarCategorias();
+      },
+      error: (error) => {
+        console.error('Error al cargar productos:', error);
+      },
+    });
+  }
+
+  private actualizarCategorias(): void {
+    this.categorias = [
+      { valor: 'ALIMENTOS', texto: 'Alimentos', icono: '🍎' },
+      { valor: 'BEBIDAS', texto: 'Bebidas', icono: '🥤' },
+      { valor: 'LACTEOS', texto: 'Lácteos', icono: '🥛' },
+      { valor: 'CARNES', texto: 'Carnes', icono: '🥩' },
+      { valor: 'PANADERIA', texto: 'Panadería', icono: '🍞' },
+      { valor: 'FRUTAS_VERDURAS', texto: 'Frutas/Verduras', icono: '🥦' },
+      { valor: 'CONGELADOS', texto: 'Congelados', icono: '❄️' },
+      { valor: 'LIMPIEZA', texto: 'Limpieza', icono: '🧼' },
+      { valor: 'HIGIENE', texto: 'Higiene', icono: '🧴' },
+      { valor: 'MASCOTAS', texto: 'Mascotas', icono: '🐶' },
+      { valor: 'HOGAR', texto: 'Hogar', icono: '🏠' },
+      { valor: 'ELECTRONICA', texto: 'Electrónica', icono: '📱' }
+    ];
+  }
+
+  agregarAlCarrito(producto: ObtenerProductoDTO, cantidad: number) {
+    if (cantidad < 1) return;
+  
+    if (!this.tokenService.isLogged()) {
+      this.tokenService.logout();
+      return;
+    }
+  
+    const tipoProducto = this.mapearTipoProducto(producto.tipoProducto);
+  
+    const productoCarritoDTO: ProductoCarritoDTO = {
+      id: producto.referencia,
+      idUsuario: this.tokenService.getIDCuenta(),
+      nombreProducto: producto.nombre,
+      tipoProducto: tipoProducto,
+      unidades: Math.round(cantidad),
+      precio: producto.precio
+    };
+  
+    this.authService.agregarItem(productoCarritoDTO).subscribe({
+      next: (respuesta) => {
+        Swal.fire({
+          title: 'Producto Agregado',
+          text: 'El producto ha sido agregado al carrito',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        Swal.fire({
+          title: 'Error',
+          text: error.error.respuesta,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    });
+  }
+
+  private mapearTipoProducto(tipo: string): TipoProducto {
+    if (Object.values(TipoProducto).includes(tipo as TipoProducto)) {
+      return tipo as TipoProducto;
+    }
+    
+    // Mapeo de descripciones a valores enum
+    const mapeo: {[key: string]: TipoProducto} = {
+      'Productos alimenticios': TipoProducto.ALIMENTOS,
+      'Bebidas y refrescos': TipoProducto.BEBIDAS,
+      'Productos lácteos': TipoProducto.LACTEOS,
+      'Carnes y embutidos': TipoProducto.CARNES,
+      'Panadería y repostería': TipoProducto.PANADERIA,
+      'Frutas y verduras': TipoProducto.FRUTAS_VERDURAS,
+      'Alimentos congelados': TipoProducto.CONGELADOS,
+      'Productos de limpieza': TipoProducto.LIMPIEZA,
+      'Productos de higiene personal': TipoProducto.HIGIENE,
+      'Productos para mascotas': TipoProducto.MASCOTAS,
+      'Artículos para el hogar': TipoProducto.HOGAR,
+      'Electrodomésticos y electrónica': TipoProducto.ELECTRONICA
+    };
+    
+    return mapeo[tipo] || TipoProducto.ALIMENTOS;
+  }
+
+  editarProducto(id: string): void {
+    this.router.navigate(['/editar-producto', id]); // 👈🏼 navega con el ID
+  }
+  
+  
 }

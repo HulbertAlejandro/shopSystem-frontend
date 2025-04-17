@@ -1,0 +1,21 @@
+.cart-item {
+    height: 150px; /* Reducida de 180px a 150px para mejor proporción */
+    transition: all 0.3s ease;
+}
+
+.quantity-control button {
+    min-width: 28px;
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        height: auto;
+        min-height: 120px;
+    }
+    .col-md-3, .col-md-9 {
+        width: 100% !important;
+    }
+    .cart-item img {
+        height: 120px !important;
+    }
+}
