@@ -18,7 +18,7 @@
         }
 
         .form-container {
-            max-width: 400px;
+            max-width: 600px;
             width: 100%;
             padding: 30px;
             background: #222;
@@ -30,9 +30,9 @@
             background: #333;
             color: white !important;
             border: none;
-            height: 60px;
+            height: 50px;
             font-size: 16px;
-            padding: 15px;
+            padding: 10px;
         }
 
         .form-control::placeholder {
@@ -48,11 +48,21 @@
             background: transparent !important;
             color: white !important;
             padding: 10px 5px;
-            transform: translateY(10px);
+            transform: translateY(8px);
         }
 
         .form-floating>label::after {
             background: transparent !important;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            background-color: #333 !important;
+            color: white !important;
+            -webkit-text-fill-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px #333 inset !important;
         }
 
         .btn-primary {
@@ -64,20 +74,6 @@
 
         .btn-primary:hover {
             background-color: #0056b3;
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .register-link a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>

@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
+import { InformacionCuentaDTO } from '../../dto/cuenta/informacion-cuenta-dto';
 import { TokenService } from '../../services/token.service';
-import { EditarCuentaDTO } from '../../dto/editar-cuenta-dto';
+import { EditarCuentaDTO } from '../../dto/cuenta/editar-cuenta-dto';
 
 @Component({
   selector: 'app-editar-cuenta',

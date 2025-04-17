@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { InformacionCuentaDTO } from '../../dto/informacion-cuenta-dto';
+import { InformacionCuentaDTO } from '../../dto/cuenta/informacion-cuenta-dto';
 import Swal from 'sweetalert2';
 
 @Component({

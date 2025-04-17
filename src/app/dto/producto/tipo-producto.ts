@@ -1,0 +1,15 @@
+// tipo-producto.enum.ts
+export enum TipoProducto {
+    ALIMENTOS = "ALIMENTOS",
+    BEBIDAS = "BEBIDAS",
+    LACTEOS = "LACTEOS",
+    CARNES = "CARNES",
+    PANADERIA = "PANADERIA",
+    FRUTAS_VERDURAS = "FRUTAS_VERDURAS",
+    CONGELADOS = "CONGELADOS",
+    LIMPIEZA = "LIMPIEZA",
+    HIGIENE = "HIGIENE",
+    MASCOTAS = "MASCOTAS",
+    HOGAR = "HOGAR",
+    ELECTRONICA = "ELECTRONICA"
+}

@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { ValidarCuentaDTO } from '../../dto/validar-cuenta-dto';
 import { AuthService } from '../../services/auth.service';
+import { ValidarCuentaDTO } from '../../dto/cuenta/validar-cuenta-dto';
 
 @Component({
   selector: 'app-verificacion-cuenta',
