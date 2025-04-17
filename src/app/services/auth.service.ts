@@ -121,9 +121,6 @@ export class AuthService {
             return this.http.put<MensajeDTO>(`${this.authURL}/editar-cupon`, cuponDTO);
           } 
 
-<<<<<<< HEAD
-}
-=======
           public eliminarCupon(id: string): Observable<MensajeDTO> {
             return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cupon/${id}`);
           }
@@ -195,4 +192,3 @@ export class AuthService {
       * CUPON
       */
 }
->>>>>>> main
