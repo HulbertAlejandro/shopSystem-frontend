@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ImageService {
-  private apiUrl = 'http://localhost:8080/api/auth/images/subir-imagen';
+  private apiUrl = 'https://shopsystem.onrender.com/api/auth/images/subir-imagen';
   private uploadStatusSubject = new BehaviorSubject<boolean>(false); // Estado de carga
 
   constructor(private http: HttpClient) {}

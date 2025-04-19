@@ -21,7 +21,7 @@ import { EditarProductoDTO } from '../dto/producto/editar-producto-dto';
   providedIn: 'root'
 })
 export class AuthService {
-  private authURL = "http://localhost:8080/api/auth";
+  private authURL = "https://shopsystem.onrender.com/api/auth";
 
   constructor(private http: HttpClient) { }
 
