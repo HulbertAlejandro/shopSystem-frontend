@@ -18,13 +18,17 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrls: ['./carrito.component.css']
 })
 export class CarritoComponent implements OnInit {
+  // Objeto que contiene los datos del carrito
   vistaCarrito: VistaCarritoDTO = {
     id_carrito: '',
     detallesCarrito: [],
     fecha: ''
   };
 
+  // Lista de detalles del carrito con info extendida del producto
   detalles: any[] = [];
+
+  // Formulario para ingresar el código de cupón
   cuponForm: FormGroup;
   cuponAplicado = false;
   descuento = 0;
@@ -48,6 +52,8 @@ export class CarritoComponent implements OnInit {
   navigateToHome(): void {
     this.router.navigate(['/home']);
   }
+
+  // Obtiene el carrito actual del usuario logueado
   private obtenerCarrito(): void {
     const idCliente = this.tokenService.getIDCuenta();
     this.authService.obtenerInformacionCarrito(idCliente).subscribe({
@@ -60,7 +66,7 @@ export class CarritoComponent implements OnInit {
     });
   }
 
-  
+   // Carga la información de productos en base a los detalles del carrito
   private cargarDatos(): void {
     this.detalles = [];
     this.vistaCarrito.detallesCarrito.forEach(detalle => {
@@ -80,6 +86,7 @@ export class CarritoComponent implements OnInit {
     });
   }
 
+  // Actualiza la cantidad ingresada manualmente
   actualizarCantidad(id: string, cantidad: number): void {
     const detalle = this.detalles.find(d => d.idProducto === id);
     if (detalle && cantidad >= 1 && cantidad <= 99) {
@@ -88,6 +95,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
+  // Aumenta la cantidad de un producto
   incrementarCantidad(id: string): void {
     console.log('Incrementando cantidad para producto:', id);
     const detalle = this.detalles.find(d => d.idProducto === id);
@@ -99,6 +107,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
+  // Disminuye la cantidad de un producto
   decrementarCantidad(id: string): void {
     const detalle = this.detalles.find(d => d.idProducto === id);
     if (detalle && detalle.cantidad > 1) {
@@ -107,6 +116,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
+  // Actualiza la cantidad de un producto en el backend
   private actualizarItemCarrito(detalle: any): void {
     const actualizarItem: ActualizarItemCarritoDTO = {
       idCliente: this.tokenService.getIDCuenta(),
@@ -123,6 +133,7 @@ export class CarritoComponent implements OnInit {
     });
   }
 
+  // Elimina un producto del carrito con confirmación
   eliminarDelCarrito(idDetalle: string): void {
     const idCuenta = this.tokenService.getIDCuenta();
 
@@ -167,6 +178,7 @@ export class CarritoComponent implements OnInit {
     });
   }
 
+  // Aplica un cupón de descuento si es válido
   aplicarCupon(): void {
     const codigoCupon = this.cuponForm.value.codigoCupon.trim(); // Obtener el valor ingresado
   
@@ -210,6 +222,7 @@ export class CarritoComponent implements OnInit {
     this.detalles = [...this.detalles];
   }
 
+  // Finaliza la compra creando una orden
   finalizarCompra(): void {
     if (this.detalles.length === 0) {
       alert('Tu carrito está vacío');
@@ -257,15 +270,17 @@ export class CarritoComponent implements OnInit {
     });
   }
   
-
+  // Cálculo del subtotal sin impuestos ni descuento
   get subtotal(): number {
     return this.detalles.reduce((sum, item) => sum + ((item.producto?.precio || 0) * item.cantidad), 0);
   }
 
+  // Cálculo del impuesto (19%)
   get impuesto(): number {
     return this.subtotal * 0.19;
   }
 
+  // Cálculo del total final con descuento e impuesto
   get total(): number {
     const subtotalConDescuento = this.subtotal * (1 - this.descuento / 100);
     return subtotalConDescuento + this.impuesto;
