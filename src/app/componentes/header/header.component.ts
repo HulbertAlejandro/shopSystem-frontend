@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { Subscription, filter } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',                  // Selector para utilizar este componente en las plantillas
@@ -16,7 +17,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subs = new Subscription();       // Suscripción a los eventos de autenticación y navegación
 
   constructor(
-    public tokenService: TokenService,      // Servicio para manejar el token
+    public tokenService: TokenService,
+    private authService : AuthService,      // Servicio para manejar el token
     private router: Router                  // Servicio de enrutamiento
   ) {}
 
@@ -104,5 +106,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isProveedor(): boolean {
     return this.shouldShowUserOptions() && this.rol === 'PROVEEDOR';  // Verifica si es Proveedor
+  }
+
+  generarBackup(): void {
+      this.authService.realizarBackup()
   }
 }

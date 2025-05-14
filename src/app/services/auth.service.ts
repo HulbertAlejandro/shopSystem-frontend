@@ -16,6 +16,7 @@ import { CrearOrdenDTO } from '../dto/orden/crear-orden-dto';
 import { IdOrdenDTO } from '../dto/orden/id-orden-dto';
 import { EditarCuponDTO } from '../dto/cupon/editar-cupon-dto';
 import { EditarProductoDTO } from '../dto/producto/editar-producto-dto';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -196,4 +197,30 @@ export class AuthService {
   public realizarPago(idOrden: IdOrdenDTO): Observable<MensajeDTO> {
     return this.http.post<MensajeDTO>(`${this.authURL}/orden/realizar-pago`, idOrden);
   }
+
+  public realizarBackup(): void {
+    this.http.get(`${this.authURL}/exportar-backup`, {
+      responseType: 'blob' // <- importante
+    }).subscribe({
+      next: (res: Blob) => {
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_shopsystem.json';
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        Swal.fire('Éxito', 'Backup descargado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error al realizar backup:', err);
+        Swal.fire('Error', 'No se pudo generar el backup', 'error');
+      }
+    });
+  }
+
+
+
+
 }
