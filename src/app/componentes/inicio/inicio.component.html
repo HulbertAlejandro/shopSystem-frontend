@@ -129,8 +129,9 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ producto.nombre }}</h5>
                                     <p class="card-text">{{ producto.descripcion }}</p>
-                                    <p class="fw-bold text-center">$ {{ producto.precio.toFixed(2) }}</p>
-                                    
+                                    <p class="fw-bold text-left">V/U $ {{ producto.precio.toFixed(2) }}</p>
+                                    <p class="card-text text-left">Disponibles:  {{ producto.unidades }}</p>
+                                
                                     <!-- Selector de cantidad -->
                                     <div class="d-flex align-items-center">
                                         

@@ -43,6 +43,12 @@
               <li class="nav-item">
                 <a class="nav-link" (click)="navigateTo('/clientes')">Clientes</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/crear-orden-producto')">Generar Orden</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/distribuidora')">Ordenes Productos</a>
+              </li>
               
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
@@ -59,6 +65,9 @@
                     <a class="dropdown-item" (click)="navigateTo('/editar-cupon')">Editar Cupon</a>
                   </li>
                 </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)=generarBackup()>Crear Backup</a>
               </li>
             }
 
@@ -77,21 +86,10 @@
               <li class="nav-item">
                 <a class="nav-link" (click)="navigateTo('/distribuidora')">Distribuidora</a>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                  Productos
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="dropdown-item" (click)="navigateTo('/crear-producto')">Crear Producto</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" (click)="navigateTo('/editar-producto')">Editar Producto</a>
-                  </li>
-                </ul>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/crear-producto')">Crear Producto</a>
               </li>
             }
-
             <!-- Menú desplegable del usuario (SOLO cuando está verificado) -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center" 

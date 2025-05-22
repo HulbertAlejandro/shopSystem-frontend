@@ -1,0 +1,59 @@
+<div class="row">
+  <!-- Formulario -->
+  <div class="col-md-6">
+    <form [formGroup]="ordenForm" (ngSubmit)="agregarProducto()">
+      <h2 class="text-center mb-4">Agregar Producto</h2>
+
+      <div class="form-floating mb-3">
+        <select class="form-control" formControlName="productoId">
+          <option value="" disabled>Seleccione un producto</option>
+          @for (item of productos; track $index) {
+            <option [value]="item.referencia">{{ item.referencia }} - {{ item.nombre }}</option>
+          }
+        </select>
+        <label>Producto</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="number" class="form-control" formControlName="cantidad" placeholder="Cantidad" min="1">
+        <label for="cantidad">Cantidad a reabastecer</label>
+      </div>
+
+      <button type="submit" class="btn btn-secondary w-100" [disabled]="ordenForm.invalid">Añadir a la lista</button>
+    </form>
+  </div>
+
+  <!-- Tabla de productos seleccionados -->
+  <div class="col-md-6">
+    <h2 class="text-center mb-4">Productos seleccionados</h2>
+
+    @if (productosSeleccionados.length > 0) {
+
+      <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Referencia</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of productosSeleccionados; track $index) {
+          <tr>
+            <td>{{ p.referencia }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td><button class="btn btn-danger btn-sm" (click)="eliminarProducto($index)">Eliminar</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>  
+    }
+    <ng-template #sinProductos>
+      <p class="text-center text-muted">No has añadido productos aún.</p>
+    </ng-template>
+
+    <button class="btn btn-primary w-100 mt-3" (click)="crearOrden()">Crear Orden Final</button>
+  </div>
+</div>

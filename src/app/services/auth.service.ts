@@ -16,179 +16,234 @@ import { CrearOrdenDTO } from '../dto/orden/crear-orden-dto';
 import { IdOrdenDTO } from '../dto/orden/id-orden-dto';
 import { EditarCuponDTO } from '../dto/cupon/editar-cupon-dto';
 import { EditarProductoDTO } from '../dto/producto/editar-producto-dto';
+import Swal from 'sweetalert2';
+import { OrdenAbastecimientoDTO } from '../dto/abastecimiento/orden-abastecimiento-dto';
+import { OrdenComponent } from '../componentes/orden/orden.component';
+import { OrdenAbastecimientoGlobalDTO } from '../dto/abastecimiento/orden-abastecimiento-global-dto';
+import { IdOrdenReabastecimientoDTO } from '../dto/abastecimiento/id-orden-reabastecimiento';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private authURL = "https://shopsystem.onrender.com/api/auth";
+  
+  private authURL = "http://localhost:8080/api/auth";
 
   constructor(private http: HttpClient) { }
 
-  /***
-  * METODOS PUBLICOS 
-  */
-      /**
-      * PRODUCTOS
-      */
-          public listarProductos(): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos`);
-          }
+  /** PRODUCTOS */
 
-          public obtenerProductoCarrito(id: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/producto/informacion/${id}`);
-          }
-        
-          public obtenerOrden(idOrden: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/orden/obtener/${idOrden}`);
-          }
-                
-          public obtenerOrdenesUsuario(id: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/orden/usuario/${id}`);
-          }  
+  /** Obtiene todos los productos disponibles */
+  public listarProductos(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos`);
+  }
 
-      /**
-      * CUENTA 
-      */
+  public listarProductosBodega(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos-bodega`);
+  }
 
-          public crearCuenta(cuentaDTO: CrearCuentaDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/crear-cuenta`, cuentaDTO);
-          }
-        
-          public iniciarSesion(loginDTO: LoginDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/iniciar-sesion`, loginDTO);
-          }
-        
-          public verificarSesion(verificacionDTO: VerificacionDTO): Observable<MensajeDTO> {
-            return this.http.put<MensajeDTO>(`${this.authURL}/verificar-sesion`, verificacionDTO);
-          }
-        
-          public activarCuenta(activarCuentaDTO: ValidarCuentaDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/activar-cuenta`, activarCuentaDTO);
-          }
-    
-          public obtenerCuenta(id: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/obtener/${id}`);
-          }
+  public listarOrdenesBodega(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-ordenes-bodega`);
+  }
 
-      /**
-      * CARRITO
-      */
+  /** Obtiene la información de un producto específico para el carrito */
+  public obtenerProductoCarrito(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/producto/informacion/${id}`);
+  }
 
-          public obtenerItems(producto: ProductoCarritoDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/carrito/agregar-item`, producto);
-          }
-            
-          public obtenerCarritoCliente(id: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/carrito/cliente/${id}`);
-          }
-      
-          public obtenerInformacionCarrito(idCarrito : string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/carrito/obtener-informacion/${idCarrito}`);
-          }
-      
-          actualizarCantidadCarrito(actualizarItemCarritoDTO : ActualizarItemCarritoDTO) {
-            return this.http.put(`${this.authURL}/carrito/actualizar-item`,actualizarItemCarritoDTO);
-          }
+  /** Obtiene los detalles de una orden */
+  public obtenerOrden(idOrden: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/orden/obtener/${idOrden}`);
+  }
 
-          public eliminarItem(idProducto: string, idCliente: string): Observable<MensajeDTO> {
-            return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-producto?idProducto=${idProducto}&idCliente=${idCliente}`);
-          }
-      /**
-      * CUPON
-      */
-          public aplicarCupon(codigoCupon: string): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/cupon/aplicar/${codigoCupon}`);
-          }
-      
-  /***
-  * METODOS ADMINISTRADOR
-  */ 
-      /**
-      * ORDEN
-      */
-          public crearOrden(crearOrden: CrearOrdenDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/orden/crear`, crearOrden);
-          } 
-      /**
-      * CUPON
-      */
-          public crearCupon(cuponDTO: CrearCuponDTO): Observable<MensajeDTO> {
-            return this.http.post<MensajeDTO>(`${this.authURL}/cupon/crear`, cuponDTO);
-          }
+  /** Obtiene todas las órdenes hechas por un usuario */
+  public obtenerOrdenesUsuario(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/orden/usuario/${id}`);
+  }
 
-          public editarCupon(cuponDTO: EditarCuponDTO): Observable<MensajeDTO> {
-            return this.http.put<MensajeDTO>(`${this.authURL}/editar-cupon`, cuponDTO);
-          } 
+  /** CUENTA */
 
-          public eliminarCupon(id: string): Observable<MensajeDTO> {
-            return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cupon/${id}`);
-          }
+  /** Crea una nueva cuenta */
+  public crearCuenta(cuentaDTO: CrearCuentaDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-cuenta`, cuentaDTO);
+  }
 
-          public obtenerCupones(): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/listar-cupones`);
-          }
-      /**
-      * CLIENTES
-      */
-          public listarClientes(): Observable<MensajeDTO> {
-            return this.http.get<MensajeDTO>(`${this.authURL}/listar-clientes`);
-          }
-  
-          public eliminarCuentaCliente(id: string): Observable<MensajeDTO> {
-            return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cliente/${id}`);
-          }
-      
-      /**
-      * PRODUCTO
-      */
-        public crearProducto(crearProducto: CrearProductoDTO): Observable<MensajeDTO> {
-          return this.http.post<MensajeDTO>(`${this.authURL}/crear-producto`, crearProducto);
-        }
+  /** Inicia sesión con usuario y contraseña */
+  public iniciarSesion(loginDTO: LoginDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/iniciar-sesion`, loginDTO);
+  }
 
-        public eliminarProducto(id: string): Observable<MensajeDTO> {
-          return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-producto/${id}`);
-        }
+  /** Verifica el código de inicio de sesión enviado al usuario */
+  public verificarSesion(verificacionDTO: VerificacionDTO): Observable<MensajeDTO> {
+    return this.http.put<MensajeDTO>(`${this.authURL}/verificar-sesion`, verificacionDTO);
+  }
 
-        public editarProducto(productoDTO: EditarProductoDTO): Observable<MensajeDTO> {
-          return this.http.put<MensajeDTO>(`${this.authURL}/editar-producto`, productoDTO);
-        } 
+  /** Activa la cuenta del usuario mediante un código enviado */
+  public activarCuenta(activarCuentaDTO: ValidarCuentaDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/activar-cuenta`, activarCuentaDTO);
+  }
 
-        public obtenerProducto(id:string): Observable<MensajeDTO>{
-          return this.http.get<MensajeDTO>(`${this.authURL}/producto/obtener/${id}`);
-        }
+  /** Obtiene la información de una cuenta por su ID */
+  public obtenerCuenta(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/obtener/${id}`);
+  }
 
-  /***
-  * METODOS CLIENTES
-  */
-      
-      /**
-      * CUENTA
-      */
-            public editarCuenta(cuentaDTO: EditarCuentaDTO): Observable<MensajeDTO> {
-              return this.http.put<MensajeDTO>(`${this.authURL}/editar-perfil`, cuentaDTO);
-            } 
-          
-            public eliminarCuenta(id: string): Observable<MensajeDTO> {
-              return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar/${id}`);
-            }
+  /** CARRITO */
 
-      /**
-      * CARRITO
-      */
-            public agregarItem(producto: ProductoCarritoDTO): Observable<MensajeDTO> {
-              return this.http.post<MensajeDTO>(`${this.authURL}/carrito/agregar-item`, producto);
-            }
+  /** Agrega un ítem al carrito */
+  public obtenerItems(producto: ProductoCarritoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/carrito/agregar-item`, producto);
+  }
 
-      /**
-      * PAGO
-      */
-                      
-            public realizarPago(idOrden: IdOrdenDTO): Observable<MensajeDTO> {
-              return this.http.post<MensajeDTO>(`${this.authURL}/orden/realizar-pago`, idOrden);
-            }
-        
-      /**
-      * CUPON
-      */
+  /** Obtiene el carrito de un cliente */
+  public obtenerCarritoCliente(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/carrito/cliente/${id}`);
+  }
+
+  /** Obtiene la información detallada del carrito */
+  public obtenerInformacionCarrito(idCarrito: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/carrito/obtener-informacion/${idCarrito}`);
+  }
+
+  /** Actualiza la cantidad de un ítem en el carrito */
+  public actualizarCantidadCarrito(actualizarItemCarritoDTO: ActualizarItemCarritoDTO) {
+    return this.http.put(`${this.authURL}/carrito/actualizar-item`, actualizarItemCarritoDTO);
+  }
+
+  /** Elimina un producto del carrito */
+  public eliminarItem(idProducto: string, idCliente: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-producto?idProducto=${idProducto}&idCliente=${idCliente}`);
+  }
+
+  /** CUPON */
+
+  /** Aplica un cupón al carrito actual */
+  public aplicarCupon(codigoCupon: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/cupon/aplicar/${codigoCupon}`);
+  }
+
+  /** ORDEN (ADMINISTRADOR) */
+
+  /** Crea una nueva orden */
+  public crearOrden(crearOrden: CrearOrdenDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/orden/crear`, crearOrden);
+  }
+
+  /** CUPON (ADMINISTRADOR) */
+
+  /** Crea un nuevo cupón */
+  public crearCupon(cuponDTO: CrearCuponDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/cupon/crear`, cuponDTO);
+  }
+
+  /** Edita un cupón existente */
+  public editarCupon(cuponDTO: EditarCuponDTO): Observable<MensajeDTO> {
+    return this.http.put<MensajeDTO>(`${this.authURL}/editar-cupon`, cuponDTO);
+  }
+
+  /** Elimina un cupón por su ID */
+  public eliminarCupon(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cupon/${id}`);
+  }
+
+  /** Obtiene la lista de todos los cupones */
+  public obtenerCupones(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-cupones`);
+  }
+
+  /** CLIENTES (ADMINISTRADOR) */
+
+  /** Obtiene la lista de todos los clientes registrados */
+  public listarClientes(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-clientes`);
+  }
+
+  /** Elimina una cuenta de cliente */
+  public eliminarCuentaCliente(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-cliente/${id}`);
+  }
+
+  /** PRODUCTO (ADMINISTRADOR) */
+
+  /** Crea un nuevo producto */
+  public crearProducto(crearProducto: CrearProductoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-producto`, crearProducto);
+  }
+
+  /** Elimina un producto por ID */
+  public eliminarProducto(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar-producto/${id}`);
+  }
+
+  /** Edita un producto existente */
+  public editarProducto(productoDTO: EditarProductoDTO): Observable<MensajeDTO> {
+    return this.http.put<MensajeDTO>(`${this.authURL}/editar-producto`, productoDTO);
+  }
+
+  /** Obtiene un producto específico por ID */
+  public obtenerProducto(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/producto/obtener/${id}`);
+  }
+
+  public obtenerProductoBodega(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/producto/bodega/obtener/${id}`);
+  }
+
+  /** CUENTA (CLIENTE) */
+
+  /** Edita la información de perfil del cliente */
+  public editarCuenta(cuentaDTO: EditarCuentaDTO): Observable<MensajeDTO> {
+    return this.http.put<MensajeDTO>(`${this.authURL}/editar-perfil`, cuentaDTO);
+  }
+
+  /** Elimina la cuenta de un cliente */
+  public eliminarCuenta(id: string): Observable<MensajeDTO> {
+    return this.http.delete<MensajeDTO>(`${this.authURL}/eliminar/${id}`);
+  }
+
+  /** CARRITO (CLIENTE) */
+
+  /** Agrega un producto al carrito */
+  public agregarItem(producto: ProductoCarritoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/carrito/agregar-item`, producto);
+  }
+
+  /** PAGO */
+
+  /** Realiza el pago de una orden */
+  public realizarPago(idOrden: IdOrdenDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/orden/realizar-pago`, idOrden);
+  }
+
+  public realizarBackup(): void {
+    this.http.get(`${this.authURL}/exportar-backup`, {
+      responseType: 'blob' // <- importante
+    }).subscribe({
+      next: (res: Blob) => {
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_shopsystem.json';
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        Swal.fire('Éxito', 'Backup descargado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error al realizar backup:', err);
+        Swal.fire('Error', 'No se pudo generar el backup', 'error');
+      }
+    });
+  }
+
+
+  public crearOrdenAbastecimiento(ordenDTO : OrdenAbastecimientoGlobalDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-orden-reabastecimiento`, ordenDTO);
+  }
+
+  public entregarOrdenes(idOrden: IdOrdenReabastecimientoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/aplicar-orden`, idOrden);
+  }
+
 }

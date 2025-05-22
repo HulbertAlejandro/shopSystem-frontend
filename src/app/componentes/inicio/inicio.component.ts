@@ -16,43 +16,44 @@ import { Router } from '@angular/router';
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css']
 })
-// ... (imports y decorador permanecen iguales)
-
+// Componente principal de la página de inicio
 export class InicioComponent {
-  filtro: string = '';
-  filtroTemp: string = '';
-  categoriaSeleccionada: string = '';
-  carrito: any[] = [];
-  isLogged = false;
-  isProveedor = false;
-  isClient = false;
-
+  filtro: string = ''; // Filtro de búsqueda por nombre de producto
+  filtroTemp: string = ''; // Filtro temporal para buscar
+  categoriaSeleccionada: string = ''; // Categoría seleccionada para filtrar productos
+  carrito: any[] = []; // Carrito de compras del usuario
+  isLogged = false; // Estado de inicio de sesión del usuario
+  isProveedor = false; // Estado si el usuario es proveedor
+  isClient = false; // Estado si el usuario es cliente
 
   // Paginación
-  paginaActual: number = 1;
-  productosPorPagina: number = 6;
+  paginaActual: number = 1; // Página actual de productos mostrados
+  productosPorPagina: number = 6; // Número de productos por página
 
-  productos: ObtenerProductoDTO[] = [];
-  categorias: {valor: string, texto: string, icono: string}[] = [];
+  productos: ObtenerProductoDTO[] = []; // Lista de productos obtenidos desde la API
+  categorias: {valor: string, texto: string, icono: string}[] = []; // Categorías de productos disponibles
 
+  // Constructor donde se inicializan los servicios y se cargan productos
   constructor(private authService: AuthService, private tokenService: TokenService, private router : Router) {
-    this.cargarProductos();
-    this.isLogged = this.tokenService.isLogged();
+    this.cargarProductos(); // Cargar productos al inicializar
+    this.isLogged = this.tokenService.isLogged(); // Verificar si el usuario está logueado
   
+    // Obtener la información del usuario para saber si es proveedor o cliente
     const userInfo = this.tokenService.getUsuarioInfo();
     if (this.isLogged && userInfo) {
       this.isProveedor = userInfo.rol === 'PROVEEDOR' && userInfo.isVerified;
       this.isClient = userInfo.rol === 'CLIENTE' && userInfo.isVerified;
     }
   }
-  
 
+  // Método para obtener los productos que se mostrarán en la página actual
   get productosPaginados() {
     const startIndex = (this.paginaActual - 1) * this.productosPorPagina;
     const endIndex = startIndex + this.productosPorPagina;
-    return this.productosFiltrados().slice(startIndex, endIndex);
+    return this.productosFiltrados().slice(startIndex, endIndex); // Retorna los productos filtrados y paginados
   }
 
+  // Método para filtrar los productos basados en el nombre y la categoría seleccionada
   productosFiltrados() {
     return this.productos.filter(p => {
       const coincideNombre = p.nombre.toLowerCase().includes(this.filtro.toLowerCase());
@@ -62,34 +63,40 @@ export class InicioComponent {
     });
   }
 
+  // Método para realizar la búsqueda cuando el usuario ingresa texto en el filtro
   buscar() {
     this.filtro = this.filtroTemp;
-    this.paginaActual = 1;
+    this.paginaActual = 1; // Resetear la página a la primera cuando se realiza una nueva búsqueda
   }
 
+  // Cambia la página actual de productos mostrados
   cambiarPagina(pagina: number) {
     if (pagina >= 1 && pagina <= this.getTotalPaginas()) {
       this.paginaActual = pagina;
-      window.scrollTo(0, 0);
+      window.scrollTo(0, 0); // Desplaza la página al inicio
     }
   }
 
+  // Establece la categoría seleccionada para filtrar productos
   seleccionarCategoria(categoria: string) {
     this.categoriaSeleccionada = categoria;
-    this.paginaActual = 1;
+    this.paginaActual = 1; // Resetear la página a la primera cuando se selecciona una categoría
   }
 
+  // Limpia todos los filtros aplicados (categoría y texto de búsqueda)
   limpiarFiltros() {
     this.categoriaSeleccionada = '';
     this.filtro = '';
     this.filtroTemp = '';
-    this.paginaActual = 1;
+    this.paginaActual = 1; // Resetear la página a la primera
   }
 
+  // Calcula el total de páginas basadas en el número de productos filtrados y la cantidad de productos por página
   getTotalPaginas(): number {
     return Math.ceil(this.productosFiltrados().length / this.productosPorPagina);
   }
 
+  // Genera una lista de las páginas a mostrar en la paginación
   getPaginas(): number[] {
     const totalPaginas = this.getTotalPaginas();
     const paginas: number[] = [];
@@ -110,26 +117,46 @@ export class InicioComponent {
     return paginas;
   }
 
+  // Devuelve el número de producto que se está mostrando en la página actual
   getProductosMostradosInicio(): number {
     return (this.paginaActual - 1) * this.productosPorPagina + 1;
   }
 
+  // Devuelve el último producto mostrado en la página actual
   getProductosMostradosFin(): number {
     return Math.min(this.paginaActual * this.productosPorPagina, this.productosFiltrados().length);
   }
 
+  // Método para cargar los productos desde la API
   cargarProductos(): void {
-    this.authService.listarProductos().subscribe({
-      next: (data) => {
-        this.productos = data.respuesta;
-        this.actualizarCategorias();
-      },
-      error: (error) => {
-        console.error('Error al cargar productos:', error);
-      },
-    });
+    console.log("ROL ", this.tokenService.getRol())
+    if(this.tokenService.getRol() == "PROVEEDOR"){
+      this.authService.listarProductosBodega().subscribe({
+            next: (data) => {
+              this.productos = data.respuesta; // Asignar los productos obtenidos
+              this.actualizarCategorias(); // Actualizar las categorías disponibles
+            },
+            error: (error) => {
+              console.error('Error al cargar productos:', error); // Mostrar error en caso de fallo
+            },
+      });
+    }
+
+    if(this.tokenService.getRol() == "ADMINISTRADOR" || this.tokenService.getRol() == "CLIENTE"){
+      this.authService.listarProductos().subscribe({
+            next: (data) => {
+              this.productos = data.respuesta; // Asignar los productos obtenidos
+              this.actualizarCategorias(); // Actualizar las categorías disponibles
+            },
+            error: (error) => {
+              console.error('Error al cargar productos:', error); // Mostrar error en caso de fallo
+            },
+      });
+    }
+    
   }
 
+  // Método para actualizar la lista de categorías disponibles
   private actualizarCategorias(): void {
     this.categorias = [
       { valor: 'ALIMENTOS', texto: 'Alimentos', icono: '🍎' },
@@ -147,14 +174,16 @@ export class InicioComponent {
     ];
   }
 
+  // Método para agregar productos al carrito
   agregarAlCarrito(producto: ObtenerProductoDTO, cantidad: number) {
-    if (cantidad < 1) return;
+    if (cantidad < 1) return; // No permitir cantidades negativas o cero
   
     if (!this.tokenService.isLogged()) {
-      this.tokenService.logout();
+      this.tokenService.logout(); // Deslogear si no está autenticado
       return;
     }
   
+    // Mapear el tipo de producto a un valor del enum TipoProducto
     const tipoProducto = this.mapearTipoProducto(producto.tipoProducto);
   
     const productoCarritoDTO: ProductoCarritoDTO = {
@@ -187,6 +216,7 @@ export class InicioComponent {
     });
   }
 
+  // Método para mapear el tipo de producto de su descripción a su valor en el enum
   private mapearTipoProducto(tipo: string): TipoProducto {
     if (Object.values(TipoProducto).includes(tipo as TipoProducto)) {
       return tipo as TipoProducto;
@@ -208,12 +238,11 @@ export class InicioComponent {
       'Electrodomésticos y electrónica': TipoProducto.ELECTRONICA
     };
     
-    return mapeo[tipo] || TipoProducto.ALIMENTOS;
+    return mapeo[tipo] || TipoProducto.ALIMENTOS; // Retorna un valor por defecto si no se encuentra el tipo
   }
 
+  // Método para navegar a la página de edición de un producto específico
   editarProducto(id: string): void {
-    this.router.navigate(['/editar-producto', id]); // 👈🏼 navega con el ID
+    this.router.navigate(['/editar-producto', id]); // Navega con el ID del producto
   }
-  
-  
 }

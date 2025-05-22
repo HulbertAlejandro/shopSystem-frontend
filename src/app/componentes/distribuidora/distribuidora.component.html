@@ -1,59 +1,88 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #1c1c1c;
-            color: white;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-        .table-container {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="container py-5">
-        <h1 class="text-center mb-4">🚛 Distribuidora Central</h1>
-        
-        <div class="table-container">
-            <h3 class="text-center">Órdenes Recibidas</h3>
-            <table class="table table-dark table-striped text-center">
-                <thead>
-                    <tr>
-                        <th>Bodega</th>
-                        <th>Productos</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let orden of ordenesDistribuidora">
-                        <td>{{ orden.bodega }}</td>
-                        <td>
-                            <ul class="list-unstyled">
-                                <li *ngFor="let producto of orden.productos">
-                                    {{ producto.nombre }} ({{ producto.categoria }}) - {{ producto.cantidadSolicitada }} unidades
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <button class="btn btn-success btn-sm" (click)="marcarComoEntregada(orden)">
-                                Entregar
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="container py-5">
+
+    @if (rolActual == "PROVEEDOR") {
+    <h1 class="text-center mb-4">🚛 Distribuidora Central</h1>
+    
+    <div class="table-container">
+        <h3 class="text-center">Órdenes Recibidas</h3>
+        <table class="table table-dark table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Fecha de Creación</th>
+                    <th>Productos</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (orden of ordenesBodega; track $index) {
+                <tr>
+                    <td>{{ orden.fechaCreacion | date:'short' }}</td>
+                    <td>
+                        <ul class="list-unstyled">
+
+                            @for (item of orden.productos; track $index) {
+                            <li>
+                                Referencia {{ item.referenciaProducto }} - Nombre: {{item.nombreProducto}} - {{ item.cantidad }} unidades
+                            </li>
+                            }
+                            
+                        </ul>
+                    </td>
+                    <td>
+                        <li class="list-unstyled">
+                            {{orden.estadoReabastecimiento}}
+                        </li>
+                    </td>
+                    <td>
+                        <button class="btn btn-success btn-sm" (click)="entregar(orden.id)">
+                            Entregar
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</body>
-</html>
+    }
+    
+    @if (rolActual == "ADMINISTRADOR") {
+    <h1 class="text-center mb-4">🚛 Ordenes de Reabastecimiento</h1>
+    
+    <div class="table-container">
+        <h3 class="text-center">Órdenes Enviadas</h3>
+        <table class="table table-dark table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Fecha de Creación</th>
+                    <th>Productos</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (orden of ordenesBodega; track $index) {
+                <tr>
+                    <td>{{ orden.fechaCreacion | date:'short' }}</td>
+                    <td>
+                        <ul class="list-unstyled">
+
+                            @for (item of orden.productos; track $index) {
+                            <li>
+                                Referencia {{ item.referenciaProducto }} - Nombre: {{item.nombreProducto}} - {{ item.cantidad }} unidades
+                            </li>
+                            }
+                            
+                        </ul>
+                    </td>
+                    <td>
+                        <li class="list-unstyled">
+                            {{orden.estadoReabastecimiento}}
+                        </li>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
