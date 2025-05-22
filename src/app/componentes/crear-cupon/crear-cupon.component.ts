@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { CrearCuponDTO } from '../../dto/cupon/crear-cupon-dto';
-import { TipoCupon } from '../../dto/cupon/tipo-cupon';
 
 @Component({
   selector: 'app-crear-cupon',
@@ -67,15 +66,32 @@ export class CrearCuponComponent {
         });
       },
       error: (error) => {
-        console.error(error); // <-- muy útil para ver qué campo falló
-        // Muestra alerta de error con mensaje personalizado si lo hay
-        Swal.fire({
-          title: 'Error',
-          text: error.error?.respuesta || 'Error al crear el cupón',
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
-      }
+              console.log(error);
+      
+              let mensaje = 'Ha ocurrido un error al crear el cupon.';
+      
+              const respuesta = error?.error?.respuesta;
+      
+              if (Array.isArray(respuesta)) {
+                // Es un array de errores por campo
+                mensaje = respuesta
+                  .map((err: any) => `• ${err.campo}: ${err.mensaje}`)
+                  .join('\n');
+              } else if (typeof respuesta === 'string') {
+                // Es un mensaje simple de error
+                mensaje = respuesta;
+              } else if (typeof error?.error === 'string') {
+                // A veces el backend solo devuelve texto como error
+                mensaje = error.error;
+              }
+      
+              Swal.fire({
+                title: 'Error en el registro de cupon',
+                text: mensaje,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
     });
   }
 

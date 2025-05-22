@@ -129,15 +129,31 @@ export class InicioComponent {
 
   // Método para cargar los productos desde la API
   cargarProductos(): void {
-    this.authService.listarProductos().subscribe({
-      next: (data) => {
-        this.productos = data.respuesta; // Asignar los productos obtenidos
-        this.actualizarCategorias(); // Actualizar las categorías disponibles
-      },
-      error: (error) => {
-        console.error('Error al cargar productos:', error); // Mostrar error en caso de fallo
-      },
-    });
+    console.log("ROL ", this.tokenService.getRol())
+    if(this.tokenService.getRol() == "PROVEEDOR"){
+      this.authService.listarProductosBodega().subscribe({
+            next: (data) => {
+              this.productos = data.respuesta; // Asignar los productos obtenidos
+              this.actualizarCategorias(); // Actualizar las categorías disponibles
+            },
+            error: (error) => {
+              console.error('Error al cargar productos:', error); // Mostrar error en caso de fallo
+            },
+      });
+    }
+
+    if(this.tokenService.getRol() == "ADMINISTRADOR" || this.tokenService.getRol() == "CLIENTE"){
+      this.authService.listarProductos().subscribe({
+            next: (data) => {
+              this.productos = data.respuesta; // Asignar los productos obtenidos
+              this.actualizarCategorias(); // Actualizar las categorías disponibles
+            },
+            error: (error) => {
+              console.error('Error al cargar productos:', error); // Mostrar error en caso de fallo
+            },
+      });
+    }
+    
   }
 
   // Método para actualizar la lista de categorías disponibles

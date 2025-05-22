@@ -58,15 +58,33 @@ export class RegistroComponent {
         });
       },
       error: (error) => {
-        // Si ocurre un error al crear la cuenta, muestra una alerta de error
         console.log(error);
+
+        let mensaje = 'Ha ocurrido un error al crear la cuenta.';
+
+        const respuesta = error?.error?.respuesta;
+
+        if (Array.isArray(respuesta)) {
+          // Es un array de errores por campo
+          mensaje = respuesta
+            .map((err: any) => `• ${err.campo}: ${err.mensaje}`)
+            .join('\n');
+        } else if (typeof respuesta === 'string') {
+          // Es un mensaje simple de error
+          mensaje = respuesta;
+        } else if (typeof error?.error === 'string') {
+          // A veces el backend solo devuelve texto como error
+          mensaje = error.error;
+        }
+
         Swal.fire({
-          title: 'Error',
-          text: error.error.respuesta,
+          title: 'Error en el registro',
+          text: mensaje,
           icon: 'error',
           confirmButtonText: 'Aceptar'
         });
       }
+
     }); 
   }
 

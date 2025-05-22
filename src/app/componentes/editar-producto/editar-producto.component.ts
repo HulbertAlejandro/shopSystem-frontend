@@ -8,6 +8,7 @@ import { TipoProducto } from '../../dto/producto/tipo-producto';
 import { EditarProductoDTO } from '../../dto/producto/editar-producto-dto';
 import { InformacionProductoDTO } from '../../dto/producto/informacion-producto-dto';
 import { MensajeDTO } from '../../dto/mensaje-dto';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-editar-producto',  // Define el selector del componente
@@ -40,7 +41,8 @@ export class EditarProductoComponent implements OnInit {
     private router: Router,  // Router para la navegación entre páginas
     private route: ActivatedRoute,  // ActivatedRoute para obtener parámetros de la ruta
     private authService: AuthService,  // Servicio de autenticación y gestión de productos
-    private imagenService: ImageService  // Servicio para subir imágenes
+    private imagenService: ImageService,
+    private tokenService : TokenService  // Servicio para subir imágenes
   ) {}
 
   // Método que se ejecuta al inicializar el componente
@@ -65,7 +67,10 @@ export class EditarProductoComponent implements OnInit {
 
   // Método para cargar los datos del producto a editar desde el backend
   private cargarProducto(): void {
-    this.authService.obtenerProducto(this.productoId).subscribe({
+
+    console.log("ROL ", this.tokenService.getRol())
+    if(this.tokenService.getRol() == "PROVEEDOR"){
+      this.authService.obtenerProductoBodega(this.productoId).subscribe({
       next: (data: MensajeDTO) => {
         const producto = data.respuesta as InformacionProductoDTO;
 
@@ -84,6 +89,30 @@ export class EditarProductoComponent implements OnInit {
         this.imagenPrevia = producto.imageUrl;
       }
     });
+    }
+
+    if(this.tokenService.getRol() == "ADMINISTRADOR" || this.tokenService.getRol() == "CLIENTE"){
+      this.authService.obtenerProducto(this.productoId).subscribe({
+      next: (data: MensajeDTO) => {
+        const producto = data.respuesta as InformacionProductoDTO;
+
+        // Rellena el formulario con los datos del producto
+        this.productoForm.patchValue({
+          referencia: producto.referencia,
+          nombre: producto.nombre,
+          tipoProducto: producto.tipoProducto,
+          imageUrl: producto.imageUrl,
+          descripcion: producto.descripcion,
+          unidades: producto.unidades,
+          precio: producto.precio
+        });
+
+        // Muestra la imagen previa del producto
+        this.imagenPrevia = producto.imageUrl;
+      }
+    });
+    }
+    
   }
 
   // Método para mapear el tipo de producto a una cadena legible para la vista
@@ -157,17 +186,21 @@ export class EditarProductoComponent implements OnInit {
     console.log(productoActualizado);
     console.log(productoActualizado.imageUrl, "url nueva");
 
-    // Llama al servicio para editar el producto en el backend
-    this.authService.editarProducto(productoActualizado).subscribe({
-      next: (data) => {
-        Swal.fire('Producto actualizado', data.respuesta, 'success')
-          .then(() => this.router.navigate(['/home']));  // Redirige al usuario después de la actualización
-      },
-      error: (error: any) => {
-        console.error(error);
-        Swal.fire('Error', error.error?.respuesta || 'Error al actualizar el producto', 'error');
-      }
-    });
+
+    console.log("ROL ", this.tokenService.getRol())
+    if(this.tokenService.getRol() == "PROVEEDOR"){
+        this.authService.editarProducto(productoActualizado).subscribe({
+        next: (data) => {
+          Swal.fire('Producto actualizado', data.respuesta, 'success')
+            .then(() => this.router.navigate(['/home']));  // Redirige al usuario después de la actualización
+        },
+        error: (error: any) => {
+          console.error(error);
+          Swal.fire('Error', error.error?.respuesta || 'Error al actualizar el producto', 'error');
+        }
+      });
+    }
+  // Llama al servicio para editar el producto en el backend
   }
 
   // Método para eliminar el producto

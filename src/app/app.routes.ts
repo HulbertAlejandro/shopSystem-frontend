@@ -19,6 +19,7 @@ import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 import { UnauthorizedComponent } from './componentes/unauthorized/unauthorized.component';
 import { CuponesComponent } from './componentes/cupones/cupones.component';
+import { CrearOrdenBodegaComponentComponent } from './componentes/crear-orden-bodega-component/crear-orden-bodega-component.component';
 
 export const routes: Routes = [
   // Rutas públicas
@@ -88,6 +89,12 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['ADMINISTRADOR'] } 
   },
+  {
+    path: 'crear-orden-producto',
+    component: CrearOrdenBodegaComponentComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRoles: ['ADMINISTRADOR'] }
+  },
 
   // Rutas protegidas para AUXILIAR_BODEGA
   { 
@@ -102,7 +109,7 @@ export const routes: Routes = [
     path: 'distribuidora', 
     component: DistribuidoraComponent,
     canActivate: [authGuard, roleGuard],
-    data: { expectedRoles: ['PROVEEDOR'] } 
+    data: { expectedRoles: ['PROVEEDOR', 'ADMINISTRADOR'] } 
   },
   { 
     path: 'crear-producto', 
@@ -116,7 +123,6 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { expectedRoles: ['PROVEEDOR'] }
   },
-
   // Ruta para errores de autorización
   { path: 'unauthorized', component: UnauthorizedComponent },
 

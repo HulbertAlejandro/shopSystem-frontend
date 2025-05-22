@@ -17,11 +17,16 @@ import { IdOrdenDTO } from '../dto/orden/id-orden-dto';
 import { EditarCuponDTO } from '../dto/cupon/editar-cupon-dto';
 import { EditarProductoDTO } from '../dto/producto/editar-producto-dto';
 import Swal from 'sweetalert2';
+import { OrdenAbastecimientoDTO } from '../dto/abastecimiento/orden-abastecimiento-dto';
+import { OrdenComponent } from '../componentes/orden/orden.component';
+import { OrdenAbastecimientoGlobalDTO } from '../dto/abastecimiento/orden-abastecimiento-global-dto';
+import { IdOrdenReabastecimientoDTO } from '../dto/abastecimiento/id-orden-reabastecimiento';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  
   private authURL = "http://localhost:8080/api/auth";
 
   constructor(private http: HttpClient) { }
@@ -31,6 +36,14 @@ export class AuthService {
   /** Obtiene todos los productos disponibles */
   public listarProductos(): Observable<MensajeDTO> {
     return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos`);
+  }
+
+  public listarProductosBodega(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-productos-bodega`);
+  }
+
+  public listarOrdenesBodega(): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/listar-ordenes-bodega`);
   }
 
   /** Obtiene la información de un producto específico para el carrito */
@@ -172,6 +185,10 @@ export class AuthService {
     return this.http.get<MensajeDTO>(`${this.authURL}/producto/obtener/${id}`);
   }
 
+  public obtenerProductoBodega(id: string): Observable<MensajeDTO> {
+    return this.http.get<MensajeDTO>(`${this.authURL}/producto/bodega/obtener/${id}`);
+  }
+
   /** CUENTA (CLIENTE) */
 
   /** Edita la información de perfil del cliente */
@@ -221,6 +238,12 @@ export class AuthService {
   }
 
 
+  public crearOrdenAbastecimiento(ordenDTO : OrdenAbastecimientoGlobalDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/crear-orden-reabastecimiento`, ordenDTO);
+  }
 
+  public entregarOrdenes(idOrden: IdOrdenReabastecimientoDTO): Observable<MensajeDTO> {
+    return this.http.post<MensajeDTO>(`${this.authURL}/aplicar-orden`, idOrden);
+  }
 
 }
