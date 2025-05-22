@@ -27,7 +27,7 @@ import { IdOrdenReabastecimientoDTO } from '../dto/abastecimiento/id-orden-reaba
 })
 export class AuthService {
   
-  private authURL = "http://localhost:8080/api/auth";
+  private authURL = "https://shop-system-frontend-822c9.web.app/api/auth";
 
   constructor(private http: HttpClient) { }
 
