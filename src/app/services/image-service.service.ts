@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ImageService {
-  private apiUrl = 'https://shop-system-frontend-822c9.web.app/api/auth/images/subir-imagen'; // URL del endpoint para subir imágenes
+  private apiUrl = 'https://shopsystem.onrender.com/api/auth/images/subir-imagen'; // URL del endpoint para subir imágenes
   private uploadStatusSubject = new BehaviorSubject<boolean>(false); // Estado de la carga, inicialmente false
 
   /**
