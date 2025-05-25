@@ -25,4 +25,4 @@ jobs:
       - name: Construir y correr pruebas
         run: |
           npm run test -- --watch=false --browsers=ChromeHeadless
-          npm run build -- --prod
+          npm run build
