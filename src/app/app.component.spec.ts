@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, HttpClientTestingModule], // ✅ AppComponent va aquí porque es standalone
+      imports: [AppComponent, HttpClientTestingModule], // AppComponent es standalone, va en imports
     }).compileComponents();
   });
 
@@ -21,10 +21,13 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('shopSystemUI');
   });
 
-  it('should render title', () => {
+  it('should render header and footer components', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, shopSystemUI');
+
+    // Verifica que <app-header> y <app-footer> estén presentes
+    expect(compiled.querySelector('app-header')).toBeTruthy();
+    expect(compiled.querySelector('app-footer')).toBeTruthy();
   });
 });
