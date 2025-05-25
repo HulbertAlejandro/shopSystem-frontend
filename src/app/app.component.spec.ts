@@ -5,8 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],              // ✅ Aquí va AppComponent
-      imports: [HttpClientTestingModule],        // ✅ Agregado HttpClientTestingModule
+      imports: [AppComponent, HttpClientTestingModule], // ✅ AppComponent va aquí porque es standalone
     }).compileComponents();
   });
 
