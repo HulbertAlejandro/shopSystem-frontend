@@ -26,4 +26,3 @@ jobs:
         run: |
           npm run test -- --watch=false --browsers=ChromeHeadless
           npm run build -- --prod
-        working-directory: ./SHOPSYSTEM-FRONTEND
